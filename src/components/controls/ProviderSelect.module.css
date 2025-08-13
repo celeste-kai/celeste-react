@@ -1,0 +1,68 @@
+.container {
+  display: inline-flex;
+  position: relative;
+}
+
+.button {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  height: 40px;
+  padding: 0 var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.chevron {
+  color: var(--color-text-muted);
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  min-width: 160px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elev-2);
+  z-index: 1000;
+  padding: 6px 0;
+}
+
+.menuDown {
+  top: calc(100% + 6px);
+}
+
+.menuUp {
+  bottom: calc(100% + 6px);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--color-border);
+}
+
+.iconOnly {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celesteStar {
+  color: var(--color-star);
+}

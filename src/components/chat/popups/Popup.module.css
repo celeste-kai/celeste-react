@@ -1,0 +1,52 @@
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-elev-2);
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.title {
+  color: var(--color-text);
+  margin-bottom: 15px;
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-1);
+  margin: 10px 0;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+.button {
+  background-color: var(--color-border);
+  color: var(--color-text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #5a5a5a;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  color: var(--color-text);
+}
+
+.settingItem label {
+  min-width: 120px;
+}
