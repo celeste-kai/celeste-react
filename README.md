@@ -80,8 +80,8 @@ cp .env.example .env
 Configure the API endpoint in your environment file:
 
 ```env
-VITE_API_URL=http://localhost:8000  # Celeste API URL
-VITE_WS_URL=ws://localhost:8000     # WebSocket URL for streaming
+VITE_API_BASE_URL=http://localhost:8000  # Celeste API base URL
+VITE_WS_URL=ws://localhost:8000          # WebSocket URL for streaming
 ```
 
 ## ✨ Features
@@ -272,6 +272,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
   Made with ❤️ by the Celeste Team
-  
-  <a href="#️-celeste-react">⬆ Back to Top</a>
+
+<a href="#️-celeste-react">⬆ Back to Top</a>
+
 </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useUiStore } from '../../lib/store/ui';
 import styles from './ProviderSelect.module.css';
-import type { ModelOut } from '../../hooks/useModels';
+import { useSelectionsStore } from '../../lib/store/selections';
+import type { ModelOut } from '../../types/api';
 
 export function ModelSelect({
   models,
@@ -76,6 +77,8 @@ export function ModelSelect({
               className={styles.item}
               onClick={() => {
                 onChange(m.id);
+                // If provider is All providers, set it to model's provider for execution readiness
+                useSelectionsStore.getState().selectModelFromCatalog(m as any);
                 setOpen(false);
               }}
             >

@@ -34,3 +34,14 @@ export interface ModelFilters {
   capability?: string;
   provider?: string;
 }
+
+// Image generation response
+export interface ImageArtifactOut {
+  data?: string | null;
+  path?: string | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface ImageGenerateResponse {
+  images: ImageArtifactOut[];
+}

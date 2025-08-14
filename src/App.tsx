@@ -1,22 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelectionsStore } from './lib/store/selections';
-import Greeting from './components/chat/Greeting';
-import MessagesList from './components/chat/MessagesList';
-import ChatInput from './components/chat/ChatInput';
+import ResultSurface from './components/results/ResultSurface';
+import InputBar from './components/input/InputBar';
 // Popups temporarily removed
-import { useChat } from './hooks/useChat';
+import { useInteraction } from './controllers/interaction';
 import { useModels, useProviders, useCapabilities } from './lib/queries/discovery';
+import { capabilityFilterMap } from './lib/capability';
 
 function App() {
-  const {
-    inputValue,
-    setInputValue,
-    handleSend,
-    handleKeyPress,
-    handleRefresh,
-    messages,
-    isGenerating,
-  } = useChat();
+  const [inputValue, setInputValue] = useState('');
+  const { submit } = useInteraction();
 
   const selectedCapability = useSelectionsStore((s) => s.capability);
   const setSelectedCapability = useSelectionsStore((s) => s.setCapability);
@@ -25,12 +18,7 @@ function App() {
   const selectedProvider = useSelectionsStore((s) => s.provider);
   const setSelectedProvider = useSelectionsStore((s) => s.setProvider);
 
-  // Map UI capability to backend capability enum name (lowercase)
-  const capabilityFilterMap: Record<'text' | 'image' | 'video', string> = {
-    text: 'text_generation',
-    image: 'image_generation',
-    video: 'video_generation',
-  };
+  // capability map imported from a single source
 
   // Use TanStack Query hook for models filtered by capability
   const { data: models = [], isFetching } = useModels({
@@ -44,7 +32,9 @@ function App() {
   const showVideo = capabilities.some((c: any) => c.id === 'video_generation');
 
   const availableProviders = providers.filter((p) => models.some((m) => m.provider === p.id));
-  const displayedModels = selectedProvider ? models.filter((m) => m.provider === selectedProvider) : models;
+  const displayedModels = selectedProvider
+    ? models.filter((m) => m.provider === selectedProvider)
+    : models;
 
   // Ensure selectedModel remains valid as capability or provider changes
   useEffect(() => {
@@ -63,6 +53,8 @@ function App() {
     }
   }, [displayedModels, selectedModelValue, setSelectedModel]);
 
+  // Provider auto-selection now handled within `useSelectionsStore.selectModelFromCatalog`
+
   // When provider is "All providers", keep it null so other providers remain visible
 
   // Note: provider is chosen by the user; when it changes, the model effect above
@@ -70,17 +62,22 @@ function App() {
 
   return (
     <div className="app">
-      {messages.length === 0 ? (
-        <Greeting name="Kamil" />
-      ) : (
-        <MessagesList messages={messages} isGenerating={isGenerating} />
-      )}
-      <ChatInput
+      <ResultSurface />
+      <InputBar
         inputValue={inputValue}
         onInputChange={(e) => setInputValue(e.target.value)}
-        onKeyPress={handleKeyPress}
-        onSend={handleSend}
-        onRefresh={handleRefresh}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submit(inputValue);
+            setInputValue('');
+          }
+        }}
+        onSend={(prompt) => {
+          submit(prompt);
+          setInputValue('');
+        }}
+        onRefresh={() => setInputValue('')}
         selectedModel={selectedModelValue || ''}
         onChangeModel={(e) => setSelectedModel(e.target.value || null)}
         models={displayedModels}
