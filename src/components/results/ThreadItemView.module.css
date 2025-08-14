@@ -1,0 +1,58 @@
+.item {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.user {
+  justify-content: flex-end;
+}
+
+.assistant {
+  justify-content: flex-start;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  color: var(--color-star);
+}
+
+.spin {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.card {
+  max-width: 70ch;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.text {
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.userCard {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}

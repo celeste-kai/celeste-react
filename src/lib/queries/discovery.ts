@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getHealth, listCapabilities, listProviders, listModels } from '../../services/api';
+import { getHealth, listCapabilities, listProviders, listModels } from '../../services/discovery';
 import type { ModelFilters } from '../../types/api';
 
 // Query keys factory for better organization

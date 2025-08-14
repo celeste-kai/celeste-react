@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { ModelOut } from '../../types/api';
 
 export type CapabilityId = 'text' | 'image' | 'video';
 
@@ -11,6 +12,7 @@ export interface SelectionsState {
   setProvider: (prov: string | null) => void;
   setModel: (model: string | null) => void;
   setStreaming: (enabled: boolean) => void;
+  selectModelFromCatalog: (model: ModelOut) => void;
 }
 
 const STORAGE_KEY = 'celeste_selections_v1';
@@ -62,6 +64,15 @@ export const useSelectionsStore = create<SelectionsState>((set, get) => ({
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ capability, provider, model, streaming: enabled }),
+    );
+  },
+  selectModelFromCatalog: (modelObj) => {
+    const { capability, provider, streaming } = get();
+    const nextProvider = provider ?? modelObj.provider;
+    set({ model: modelObj.id, provider: nextProvider });
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ capability, provider: nextProvider, model: modelObj.id, streaming }),
     );
   },
 }));

@@ -1,18 +1,16 @@
 import React from 'react';
-// import IconButton from '../common/IconButton';
-import styles from './ChatInput.module.css';
+import styles from '../chat/ChatInput.module.css';
 import { ProviderSelect } from '../controls/ProviderSelect';
 import { ModelSelect } from '../controls/ModelSelect';
-import CapabilityButtons from './CapabilityButtons';
-import type { ModelOut } from '../../types/api';
-import type { ProviderOut } from '../../types/api';
+import CapabilityButtons from '../chat/CapabilityButtons';
+import type { ModelOut, ProviderOut } from '../../types/api';
 
-type ChatInputProps = {
+type Props = {
   inputValue: string;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSend: () => void;
-  onRefresh: () => void; // currently unused, reserved for future actions
+  onSend: (prompt: string) => void;
+  onRefresh: () => void;
   selectedModel: string;
   onChangeModel: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   models?: ModelOut[];
@@ -27,7 +25,7 @@ type ChatInputProps = {
   showVideo?: boolean;
 };
 
-function ChatInput({
+export default function InputBar({
   inputValue,
   onInputChange,
   onKeyPress,
@@ -46,7 +44,13 @@ function ChatInput({
   showText = true,
   showImage = true,
   showVideo = true,
-}: ChatInputProps) {
+}: Props) {
+  const placeholder =
+    selectedCapability === 'image'
+      ? "Décrivez l'image à générer…"
+      : selectedCapability === 'video'
+        ? 'Décrivez la vidéo à générer…'
+        : 'Comment puis-je vous aider ?';
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -54,7 +58,7 @@ function ChatInput({
           <input
             type="text"
             className={styles.textInput}
-            placeholder="Comment puis-je vous aider ?"
+            placeholder={placeholder}
             value={inputValue}
             onChange={onInputChange}
             onKeyPress={onKeyPress}
@@ -88,7 +92,12 @@ function ChatInput({
               }
               isLoading={isLoadingModels}
             />
-            <button className={styles.sendBtn} onClick={onSend} title="Send message" type="button">
+            <button
+              className={styles.sendBtn}
+              onClick={() => onSend(inputValue)}
+              title="Send message"
+              type="button"
+            >
               ↑
             </button>
           </div>
@@ -97,5 +106,3 @@ function ChatInput({
     </div>
   );
 }
-
-export default ChatInput;

@@ -1,17 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listModels } from '../services/api';
-
-export type ModelOut = {
-  id: string;
-  provider: string;
-  display_name?: string | null;
-  capabilities: string[];
-};
-
-export type ModelFilters = {
-  capability?: string;
-  provider?: string;
-};
+import { listModels } from '../services/discovery';
+import type { ModelOut, ModelFilters } from '../types/api';
 
 export function useModels(filters: ModelFilters = {}) {
   const [models, setModels] = useState<ModelOut[]>([]);
