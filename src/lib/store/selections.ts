@@ -7,31 +7,36 @@ export interface SelectionsState {
   capability: CapabilityId;
   provider: string | null;
   model: string | null;
-  streaming: boolean;
+  providerFilter: string | null;
   setCapability: (cap: CapabilityId) => void;
   setProvider: (prov: string | null) => void;
   setModel: (model: string | null) => void;
-  setStreaming: (enabled: boolean) => void;
+  setProviderFilter: (prov: string | null) => void;
   selectModelFromCatalog: (model: ModelOut) => void;
 }
 
-const STORAGE_KEY = 'celeste_selections_v1';
+const STORAGE_KEY = 'celeste_selections_v3';
 
-function loadInitial(): Pick<SelectionsState, 'capability' | 'provider' | 'model' | 'streaming'> {
+function loadInitial(): Pick<
+  SelectionsState,
+  'capability' | 'provider' | 'model' | 'providerFilter'
+> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      return { capability: 'text', provider: null, model: null, streaming: true };
+      return { capability: 'text', provider: null, model: null, providerFilter: null };
     }
     const parsed = JSON.parse(raw);
-    return {
+    const initial = {
       capability: parsed.capability ?? 'text',
       provider: parsed.provider ?? null,
       model: parsed.model ?? null,
-      streaming: parsed.streaming ?? true,
-    };
+      providerFilter: parsed.providerFilter ?? null,
+    } as const;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+    return initial;
   } catch {
-    return { capability: 'text', provider: null, model: null, streaming: true };
+    return { capability: 'text', provider: null, model: null, providerFilter: null };
   }
 }
 
@@ -39,40 +44,48 @@ export const useSelectionsStore = create<SelectionsState>((set, get) => ({
   ...loadInitial(),
   setCapability: (cap) => {
     set({ capability: cap });
-    const { provider, model, streaming } = get();
+    const { provider, model, providerFilter } = get();
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ capability: cap, provider, model, streaming }),
+      JSON.stringify({ capability: cap, provider, model, providerFilter }),
     );
   },
   setProvider: (prov) => {
     set({ provider: prov });
-    const { capability, model, streaming } = get();
+    const { capability, model, providerFilter } = get();
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ capability, provider: prov, model, streaming }),
+      JSON.stringify({ capability, provider: prov, model, providerFilter }),
     );
   },
   setModel: (model) => {
     set({ model });
-    const { capability, provider, streaming } = get();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ capability, provider, model, streaming }));
+    const { capability, provider, providerFilter } = get();
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ capability, provider, model, providerFilter }),
+    );
   },
-  setStreaming: (enabled) => {
-    set({ streaming: enabled });
+  setProviderFilter: (prov) => {
+    set({ providerFilter: prov });
     const { capability, provider, model } = get();
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ capability, provider, model, streaming: enabled }),
+      JSON.stringify({ capability, provider, model, providerFilter: prov }),
     );
   },
   selectModelFromCatalog: (modelObj) => {
-    const { capability, provider, streaming } = get();
-    const nextProvider = provider ?? modelObj.provider;
-    set({ model: modelObj.id, provider: nextProvider });
+    const { capability, providerFilter } = get();
+    // Unconditionally lock provider to the model's provider and set the model id
+    set({ model: modelObj.id, provider: modelObj.provider });
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ capability, provider: nextProvider, model: modelObj.id, streaming }),
+      JSON.stringify({
+        capability,
+        provider: modelObj.provider,
+        model: modelObj.id,
+        providerFilter,
+      }),
     );
   },
 }));

@@ -15,3 +15,6 @@ export async function handleResponse<T>(response: Response): Promise<T> {
   }
   return response.json();
 }
+
+// Read an NDJSON HTTP response body and yield parsed objects
+// NDJSON parsing moved to src/lib/stream.ts to keep services lean

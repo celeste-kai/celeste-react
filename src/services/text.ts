@@ -1,19 +1,24 @@
-import { API_BASE_URL, handleResponse } from './base';
+import { API_BASE_URL } from './base';
+import { readNdjson } from '../lib/stream';
 
-export async function generateText(args: {
-  provider: string;
-  model: string;
-  prompt: string;
-}): Promise<{
-  content: string;
-  provider: string;
-  model: string;
-  metadata: Record<string, unknown>;
-}> {
-  const res = await fetch(`${API_BASE_URL}/v1/text/generate`, {
+export async function* streamText(
+  args: { provider: string; model: string; prompt: string },
+  options: { signal?: AbortSignal } = {},
+): AsyncGenerator<string, void, unknown> {
+  const res = await fetch(`${API_BASE_URL}/v1/text/stream`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/x-ndjson',
+    },
     body: JSON.stringify(args),
+    signal: options.signal,
   });
-  return handleResponse(res);
+
+  for await (const obj of readNdjson(res)) {
+    const content = String((obj as any)?.content ?? '');
+    if (content) {
+      yield content;
+    }
+  }
 }
