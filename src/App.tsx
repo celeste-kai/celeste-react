@@ -17,6 +17,8 @@ function App() {
   const setSelectedModel = useSelectionsStore((s) => s.setModel);
   const selectedProvider = useSelectionsStore((s) => s.provider);
   const setSelectedProvider = useSelectionsStore((s) => s.setProvider);
+  const providerFilter = useSelectionsStore((s) => s.providerFilter);
+  const setProviderFilter = useSelectionsStore((s) => s.setProviderFilter);
 
   // capability map imported from a single source
 
@@ -32,9 +34,8 @@ function App() {
   const showVideo = capabilities.some((c: any) => c.id === 'video_generation');
 
   const availableProviders = providers.filter((p) => models.some((m) => m.provider === p.id));
-  const displayedModels = selectedProvider
-    ? models.filter((m) => m.provider === selectedProvider)
-    : models;
+  const displayedModels =
+    providerFilter === null ? models : models.filter((m) => m.provider === providerFilter);
 
   // Ensure selectedModel remains valid as capability or provider changes
   useEffect(() => {
@@ -42,6 +43,13 @@ function App() {
       setSelectedProvider(null);
     }
   }, [availableProviders, selectedProvider, setSelectedProvider]);
+
+  useEffect(() => {
+    // If the current providerFilter is no longer valid for the new capability, reset to All providers
+    if (providerFilter && !availableProviders.some((p) => p.id === providerFilter)) {
+      setProviderFilter(null);
+    }
+  }, [availableProviders, providerFilter, setProviderFilter]);
 
   useEffect(() => {
     if (!displayedModels || displayedModels.length === 0) {
@@ -79,14 +87,19 @@ function App() {
         }}
         onRefresh={() => setInputValue('')}
         selectedModel={selectedModelValue || ''}
-        onChangeModel={(e) => setSelectedModel(e.target.value || null)}
+        onChangeModel={(value) => setSelectedModel(value)}
         models={displayedModels}
         isLoadingModels={isFetching && models.length === 0}
         selectedCapability={selectedCapability}
         onSelectCapability={setSelectedCapability}
         providers={availableProviders}
-        selectedProvider={selectedProvider || ''}
-        onChangeProvider={(e) => setSelectedProvider(e.target.value || null)}
+        selectedProvider={providerFilter || ''}
+        onChangeProvider={(value) => {
+          setProviderFilter(value);
+          if (value !== null) {
+            setSelectedProvider(value);
+          }
+        }}
         showText={showText}
         showImage={showImage}
         showVideo={showVideo}

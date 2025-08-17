@@ -12,7 +12,7 @@ export function ProviderSelect({
 }: {
   providers: ProviderOut[];
   value: string;
-  onChange: (next: string) => void;
+  onChange: (next: string | null) => void;
   compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -42,8 +42,8 @@ export function ProviderSelect({
   }, [openMenu, open]);
 
   const current = useMemo(() => providers.find((p) => p.id === value), [providers, value]);
-  const currentId = value || 'celeste';
-  const currentLabel = current?.label || (value ? value : 'All providers');
+  const currentId = current ? current.id : 'celeste';
+  const currentLabel = current?.label || 'All providers';
 
   return (
     <div className={styles.container}>
@@ -69,7 +69,7 @@ export function ProviderSelect({
           <button
             className={styles.item}
             onClick={() => {
-              onChange('');
+              onChange(null);
               setOpen(false);
             }}
           >

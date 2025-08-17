@@ -7,12 +7,10 @@ import type { ModelOut } from '../../types/api';
 export function ModelSelect({
   models,
   value,
-  onChange,
   isLoading = false,
 }: {
   models: ModelOut[];
   value: string;
-  onChange: (next: string) => void;
   isLoading?: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -76,9 +74,8 @@ export function ModelSelect({
               key={m.id}
               className={styles.item}
               onClick={() => {
-                onChange(m.id);
-                // If provider is All providers, set it to model's provider for execution readiness
-                useSelectionsStore.getState().selectModelFromCatalog(m as any);
+                // Lock provider to the model's provider and set model id in the store
+                useSelectionsStore.getState().selectModelFromCatalog(m);
                 setOpen(false);
               }}
             >

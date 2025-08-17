@@ -12,14 +12,14 @@ type Props = {
   onSend: (prompt: string) => void;
   onRefresh: () => void;
   selectedModel: string;
-  onChangeModel: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChangeModel: (value: string | null) => void;
   models?: ModelOut[];
   isLoadingModels?: boolean;
   selectedCapability: 'text' | 'image' | 'video';
   onSelectCapability: (cap: 'text' | 'image' | 'video') => void;
   providers?: ProviderOut[];
   selectedProvider: string;
-  onChangeProvider: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChangeProvider: (value: string | null) => void;
   showText?: boolean;
   showImage?: boolean;
   showVideo?: boolean;
@@ -78,18 +78,12 @@ export default function InputBar({
             <ProviderSelect
               providers={providers}
               value={selectedProvider}
-              onChange={(next) =>
-                onChangeProvider({
-                  target: { value: next },
-                } as React.ChangeEvent<HTMLSelectElement>)
-              }
+              onChange={(next) => onChangeProvider(next)}
             />
             <ModelSelect
               models={models}
               value={selectedModel}
-              onChange={(id) =>
-                onChangeModel({ target: { value: id } } as React.ChangeEvent<HTMLSelectElement>)
-              }
+              onChange={(id) => onChangeModel(id)}
               isLoading={isLoadingModels}
             />
             <button
