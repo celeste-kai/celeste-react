@@ -87,7 +87,6 @@ function App() {
         }}
         onRefresh={() => setInputValue('')}
         selectedModel={selectedModelValue || ''}
-        onChangeModel={(value) => setSelectedModel(value)}
         models={displayedModels}
         isLoadingModels={isFetching && models.length === 0}
         selectedCapability={selectedCapability}

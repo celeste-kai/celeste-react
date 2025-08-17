@@ -12,7 +12,6 @@ type Props = {
   onSend: (prompt: string) => void;
   onRefresh: () => void;
   selectedModel: string;
-  onChangeModel: (value: string | null) => void;
   models?: ModelOut[];
   isLoadingModels?: boolean;
   selectedCapability: 'text' | 'image' | 'video';
@@ -33,7 +32,6 @@ export default function InputBar({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onRefresh,
   selectedModel,
-  onChangeModel,
   models = [],
   isLoadingModels = false,
   selectedCapability,
@@ -80,12 +78,7 @@ export default function InputBar({
               value={selectedProvider}
               onChange={(next) => onChangeProvider(next)}
             />
-            <ModelSelect
-              models={models}
-              value={selectedModel}
-              onChange={(id) => onChangeModel(id)}
-              isLoading={isLoadingModels}
-            />
+            <ModelSelect models={models} value={selectedModel} isLoading={isLoadingModels} />
             <button
               className={styles.sendBtn}
               onClick={() => onSend(inputValue)}

@@ -2,7 +2,13 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import styles from './MessagesList.module.css';
-import type { ChatMessage } from '../../hooks/useChat';
+
+export type ChatMessage = {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  createdAt: number;
+};
 
 type MessagesListProps = {
   messages: ChatMessage[];
