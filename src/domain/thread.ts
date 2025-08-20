@@ -12,6 +12,12 @@ export type ImagePart = {
   dataUrl?: string;
   path?: string;
   metadata?: Record<string, unknown>;
+  // For image edits - track original image
+  originalImage?: {
+    dataUrl?: string;
+    path?: string;
+  };
+  editPrompt?: string; // The prompt used for editing
 };
 
 export type VideoPart = {

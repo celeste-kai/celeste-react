@@ -10,7 +10,7 @@ function PartView({ part }: { part: ContentPart }) {
     return <TextPart content={part.content} />;
   }
   if (part.kind === 'image') {
-    return <ImagePart dataUrl={part.dataUrl} path={part.path} />;
+    return <ImagePart {...part} />;
   }
   if (part.kind === 'video') {
     return <VideoPart url={part.url} path={part.path} />;
