@@ -67,7 +67,8 @@ function App() {
       return;
     }
     if (!displayedModels.some((m) => m.id === (selectedModelValue || ''))) {
-      setSelectedModel(displayedModels[0].id);
+      // Use selectModelFromCatalog to set both model and provider
+      useSelectionsStore.getState().selectModelFromCatalog(displayedModels[0]);
     }
   }, [displayedModels, selectedModelValue, setSelectedModel]);
 
