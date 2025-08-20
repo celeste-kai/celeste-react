@@ -45,3 +45,8 @@ export interface ImageArtifactOut {
 export interface ImageGenerateResponse {
   images: ImageArtifactOut[];
 }
+
+// Image editing types
+export interface ImageEditResponse {
+  image: ImageArtifactOut;
+}

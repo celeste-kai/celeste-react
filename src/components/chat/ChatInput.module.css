@@ -25,6 +25,13 @@
 .inputRow {
   display: flex;
   align-items: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.inputRow.dragging {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
 }
 
 .inputButton {
@@ -200,4 +207,66 @@
   .modelSelector {
     display: none;
   }
+}
+
+/* Image edit additions */
+.addImageBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.addImageBtn:hover {
+  background-color: var(--color-border);
+}
+
+.imagePreview {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+
+.imagePreview img {
+  display: block;
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.clearImage {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: white;
+  color: #2a2a2a;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.clearImage:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }

@@ -5,10 +5,12 @@ import InputBar from './components/input/InputBar';
 // Popups temporarily removed
 import { useInteraction } from './controllers/interaction';
 import { useModels, useProviders, useCapabilities } from './lib/queries/discovery';
-import { capabilityFilterMap } from './lib/capability';
+import { capabilityFilterMap, imageModeCapabilityMap } from './lib/capability';
+import { fileToDataUrl } from './utils/image';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
+  const [draggedImage, setDraggedImage] = useState<string | null>(null);
   const { submit } = useInteraction();
 
   const selectedCapability = useSelectionsStore((s) => s.capability);
@@ -19,12 +21,20 @@ function App() {
   const setSelectedProvider = useSelectionsStore((s) => s.setProvider);
   const providerFilter = useSelectionsStore((s) => s.providerFilter);
   const setProviderFilter = useSelectionsStore((s) => s.setProviderFilter);
+  const imageMode = useSelectionsStore((s) => s.imageMode);
+  const setImageMode = useSelectionsStore((s) => s.setImageMode);
 
   // capability map imported from a single source
 
+  // Determine which capability to filter by based on mode
+  const capabilityFilter =
+    selectedCapability === 'image' && imageMode === 'edit'
+      ? imageModeCapabilityMap[imageMode]
+      : capabilityFilterMap[selectedCapability];
+
   // Use TanStack Query hook for models filtered by capability
   const { data: models = [], isFetching } = useModels({
-    capability: capabilityFilterMap[selectedCapability],
+    capability: capabilityFilter,
   });
   const { data: providers = [] } = useProviders();
   const { data: capabilities = [] } = useCapabilities();
@@ -68,6 +78,38 @@ function App() {
   // Note: provider is chosen by the user; when it changes, the model effect above
   // will pick the first model for that provider if the current model no longer matches.
 
+  // Global drag and drop handlers
+  useEffect(() => {
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const handleDrop = async (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const file = e.dataTransfer?.files[0];
+      if (file && file.type.startsWith('image/')) {
+        // Auto-switch to image capability
+        setSelectedCapability('image');
+
+        // Convert to data URL using utility
+        const dataUrl = await fileToDataUrl(file);
+        setDraggedImage(dataUrl);
+      }
+    };
+
+    // Add listeners to the entire document
+    document.addEventListener('dragover', handleDragOver);
+    document.addEventListener('drop', handleDrop);
+
+    return () => {
+      document.removeEventListener('dragover', handleDragOver);
+      document.removeEventListener('drop', handleDrop);
+    };
+  }, [setSelectedCapability]);
+
   return (
     <div className="app">
       <ResultSurface />
@@ -81,8 +123,8 @@ function App() {
             setInputValue('');
           }
         }}
-        onSend={(prompt) => {
-          submit(prompt);
+        onSend={(prompt, imageData) => {
+          submit(prompt, imageData);
           setInputValue('');
         }}
         onRefresh={() => setInputValue('')}
@@ -102,6 +144,10 @@ function App() {
         showText={showText}
         showImage={showImage}
         showVideo={showVideo}
+        imageMode={imageMode}
+        onImageModeChange={setImageMode}
+        externalImage={draggedImage}
+        onExternalImageHandled={() => setDraggedImage(null)}
       />
     </div>
   );
