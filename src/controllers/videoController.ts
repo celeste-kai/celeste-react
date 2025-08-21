@@ -3,6 +3,7 @@ import { useSelectionsStore } from '../lib/store/selections';
 import { useThreadStore } from '../stores/thread';
 import { useExecStore } from '../stores/exec';
 import { generateVideo } from '../services/video';
+import { validateControllerParams } from '../utils/validation';
 
 export function useVideoController() {
   const provider = useSelectionsStore((s) => s.provider) || '';
@@ -13,8 +14,8 @@ export function useVideoController() {
 
   const execute = useCallback(
     async (prompt: string) => {
-      const trimmed = prompt.trim();
-      if (!trimmed || !provider || !model) {
+      const { isValid, trimmedPrompt } = validateControllerParams({ prompt, provider, model });
+      if (!isValid) {
         return;
       }
 
@@ -24,20 +25,28 @@ export function useVideoController() {
         capability: 'video',
         provider,
         model,
-        parts: [{ kind: 'text', content: trimmed }],
+        parts: [{ kind: 'text', content: trimmedPrompt }],
       });
 
       setIsGenerating(true);
       setGlobalGenerating(true);
       try {
-        const res: any = await generateVideo({ provider, model, prompt: trimmed });
+        const res: any = await generateVideo({ provider, model, prompt: trimmedPrompt });
+
         const videos = Array.isArray(res?.videos) ? res.videos : [];
-        const parts = videos.map((v: any) => ({
-          kind: 'video' as const,
-          url: v?.url ?? undefined,
-          path: v?.path ?? undefined,
-          metadata: v?.metadata ?? {},
-        }));
+
+        const parts = videos.map((v: any) => {
+          const processedUrl = v?.url?.startsWith('/')
+            ? `${import.meta.env.VITE_API_BASE_URL}${v.url}`
+            : v?.url;
+
+          return {
+            kind: 'video' as const,
+            url: processedUrl,
+            path: v?.path ?? undefined,
+            metadata: v?.metadata ?? {},
+          };
+        });
 
         if (parts.length > 0) {
           addItem({

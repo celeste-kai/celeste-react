@@ -3,6 +3,8 @@ import { useSelectionsStore } from '../lib/store/selections';
 import { useThreadStore } from '../stores/thread';
 import { useExecStore } from '../stores/exec';
 import { generateImages } from '../services/images';
+import { validateControllerParams } from '../utils/validation';
+import { safeApiDataToDataUrl } from '../utils/image';
 
 export function useImageController() {
   const provider = useSelectionsStore((s) => s.provider) || '';
@@ -13,8 +15,8 @@ export function useImageController() {
 
   const execute = useCallback(
     async (prompt: string) => {
-      const trimmed = prompt.trim();
-      if (!trimmed || !provider || !model) {
+      const { isValid, trimmedPrompt } = validateControllerParams({ prompt, provider, model });
+      if (!isValid) {
         return;
       }
 
@@ -24,31 +26,19 @@ export function useImageController() {
         capability: 'image',
         provider,
         model,
-        parts: [{ kind: 'text', content: trimmed }],
+        parts: [{ kind: 'text', content: trimmedPrompt }],
       });
 
       setIsGenerating(true);
       setGlobalGenerating(true);
       try {
-        const res = await generateImages({ provider, model, prompt: trimmed });
-        const images = (res?.images || []).map((img: any) => {
-          let dataUrl: string | undefined;
-          if (img?.data) {
-            try {
-              dataUrl = String(img.data).startsWith('data:')
-                ? String(img.data)
-                : `data:image/png;base64,${btoa(String(img.data))}`;
-            } catch {
-              dataUrl = undefined;
-            }
-          }
-          return {
-            kind: 'image' as const,
-            dataUrl,
-            path: img?.path ?? undefined,
-            metadata: img?.metadata ?? {},
-          };
-        });
+        const res = await generateImages({ provider, model, prompt: trimmedPrompt });
+        const images = (res?.images || []).map((img: any) => ({
+          kind: 'image' as const,
+          dataUrl: safeApiDataToDataUrl(img?.data),
+          path: img?.path ?? undefined,
+          metadata: img?.metadata ?? {},
+        }));
 
         // Append assistant images as a turn
         addItem({

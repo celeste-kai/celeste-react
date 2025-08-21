@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import styles from './ProviderSelect.module.css';
 import { useUiStore } from '../../lib/store/ui';
 import ProviderIcon from '../icons/ProviderIcon';
+import styles from './ProviderSelect.module.css';
 import type { ProviderOut } from '../../types/api';
 
 export function ProviderSelect({

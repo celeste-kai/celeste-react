@@ -1,11 +1,11 @@
 import React from 'react';
 import Greeting from '../chat/Greeting';
 import { useThreadStore } from '../../stores/thread';
+import { useExecStore } from '../../stores/exec';
+import { useSelectionsStore } from '../../lib/store/selections';
 import ThreadItemView from './ThreadItemView';
 import styles from './ResultSurface.module.css';
 import itemStyles from './ThreadItemView.module.css';
-import { useExecStore } from '../../stores/exec';
-import { useSelectionsStore } from '../../lib/store/selections';
 
 export default function ResultSurface() {
   const items = useThreadStore((s) => s.items);
