@@ -3,7 +3,8 @@ import { useSelectionsStore } from '../lib/store/selections';
 import { useThreadStore } from '../stores/thread';
 import { useExecStore } from '../stores/exec';
 import { editImage } from '../services/images';
-import { extractBase64FromDataUrl } from '../utils/image';
+import { extractBase64FromDataUrl, base64ToDataUrl } from '../utils/image';
+import { validateImageEditParams } from '../utils/validation';
 
 export function useImageEditController() {
   const provider = useSelectionsStore((s) => s.provider) || '';
@@ -14,8 +15,13 @@ export function useImageEditController() {
 
   const execute = useCallback(
     async (prompt: string, imageDataUrl: string) => {
-      const trimmed = prompt.trim();
-      if (!trimmed || !provider || !model || !imageDataUrl) {
+      const { isValid, trimmedPrompt } = validateImageEditParams({
+        prompt,
+        provider,
+        model,
+        imageDataUrl,
+      });
+      if (!isValid) {
         return;
       }
 
@@ -30,7 +36,7 @@ export function useImageEditController() {
         model,
         parts: [
           { kind: 'image', dataUrl: imageDataUrl },
-          { kind: 'text', content: trimmed },
+          { kind: 'text', content: trimmedPrompt },
         ],
       });
 
@@ -38,9 +44,9 @@ export function useImageEditController() {
       setGlobalGenerating(true);
 
       // No error handling - let it fail
-      const res = await editImage({ provider, model, prompt: trimmed, image: base64 });
+      const res = await editImage({ provider, model, prompt: trimmedPrompt, image: base64 });
 
-      const editedDataUrl = res.image.data ? `data:image/png;base64,${res.image.data}` : undefined;
+      const editedDataUrl = res.image.data ? base64ToDataUrl(res.image.data) : undefined;
 
       // Add edited result with original reference
       addItem({
@@ -53,7 +59,7 @@ export function useImageEditController() {
             kind: 'image',
             dataUrl: editedDataUrl,
             originalImage: { dataUrl: imageDataUrl },
-            editPrompt: trimmed,
+            editPrompt: trimmedPrompt,
             metadata: res.image.metadata || {},
           },
         ],

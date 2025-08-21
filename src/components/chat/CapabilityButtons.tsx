@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './ChatInput.module.css';
 import textIcon from '../../assets/icons/text.svg?url';
 import imageIcon from '../../assets/icons/image.svg?url';
 import videoIcon from '../../assets/icons/video.svg?url';
+import styles from './ChatInput.module.css';
 
 type Capability = 'text' | 'image' | 'video';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useUiStore } from '../../lib/store/ui';
-import styles from './ProviderSelect.module.css';
 import { useSelectionsStore } from '../../lib/store/selections';
+import styles from './ProviderSelect.module.css';
 import type { ModelOut } from '../../types/api';
 
 export function ModelSelect({

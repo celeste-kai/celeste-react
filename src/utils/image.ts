@@ -24,3 +24,25 @@ export async function fileToDataUrl(file: File): Promise<string> {
 export function extractBase64FromDataUrl(dataUrl: string): string {
   return dataUrl.split(',')[1];
 }
+
+// Convert base64 to data URL with proper mime type
+export function base64ToDataUrl(base64: string, mimeType: string = 'image/png'): string {
+  return `data:${mimeType};base64,${base64}`;
+}
+
+// Safely convert API response data to data URL
+export function safeApiDataToDataUrl(
+  data: unknown,
+  mimeType: string = 'image/png',
+): string | undefined {
+  if (!data) {
+    return undefined;
+  }
+
+  try {
+    const dataStr = String(data);
+    return dataStr.startsWith('data:') ? dataStr : base64ToDataUrl(dataStr, mimeType);
+  } catch {
+    return undefined;
+  }
+}

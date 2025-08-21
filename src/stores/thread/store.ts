@@ -44,6 +44,7 @@ export const useThreadStore = create<ThreadState>((set) => ({
       createdAt: item.createdAt || now,
       ...item,
     } as ThreadItem;
+
     set((state) => ({ items: [...state.items, finalItem] }));
   },
   addText: (content, params) => {

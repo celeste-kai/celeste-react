@@ -1,5 +1,5 @@
-import { API_BASE_URL } from './base';
 import { readNdjson } from '../lib/stream';
+import { API_BASE_URL } from './base';
 
 export async function* streamText(
   args: { provider: string; model: string; prompt: string },
