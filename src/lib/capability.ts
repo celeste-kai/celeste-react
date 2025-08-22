@@ -1,7 +1,8 @@
-export const capabilityFilterMap: Record<'text' | 'image' | 'video', string> = {
+export const capabilityFilterMap: Record<'text' | 'image' | 'video' | 'rerank', string> = {
   text: 'text_generation',
   image: 'image_generation',
   video: 'video_generation',
+  rerank: 'reranking',
 };
 
 // Image mode toggle
