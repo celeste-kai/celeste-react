@@ -160,7 +160,7 @@ export default function InputBarView({
             />
             <button
               className={styles.sendBtn}
-              onClick={onSend}
+              onClick={() => onSend()}
               title="Send message"
               type="button"
             >

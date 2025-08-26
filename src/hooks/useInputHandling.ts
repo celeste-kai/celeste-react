@@ -1,10 +1,28 @@
 import { useState, useCallback } from "react";
 import type React from "react";
-import { useInteraction } from "../controllers/interaction";
+import { useSubmission } from "./useSubmission";
+import type { ImageMode } from "../lib/capability";
 
-export function useInputHandling() {
+interface UseInputHandlingProps {
+  selectedCapability: "text" | "image" | "video";
+  imageMode?: ImageMode;
+  uploadedImage?: string;
+  onClearImage?: () => void;
+}
+
+export function useInputHandling({
+  selectedCapability,
+  imageMode,
+  uploadedImage,
+  onClearImage,
+}: UseInputHandlingProps) {
   const [inputValue, setInputValue] = useState("");
-  const { submit } = useInteraction();
+  const { submit } = useSubmission({
+    selectedCapability,
+    imageMode,
+    uploadedImage,
+    onClearImage,
+  });
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
@@ -22,8 +40,8 @@ export function useInputHandling() {
   );
 
   const handleSend = useCallback(
-    (prompt: string, imageData?: any) => {
-      submit(prompt, imageData);
+    (prompt: string) => {
+      submit(prompt);
       setInputValue("");
     },
     [submit],

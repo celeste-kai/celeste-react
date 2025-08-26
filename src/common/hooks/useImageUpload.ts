@@ -89,6 +89,11 @@ export function useImageUpload(opts?: {
 
       const dataUrl = await fileToDataUrl(file);
       setUploadedImage(dataUrl);
+
+      // Reset file input after successful processing to allow re-uploading the same file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch {
       setError('Failed to process image. Please try again.');
     }
@@ -100,6 +105,11 @@ export function useImageUpload(opts?: {
     }
     setUploadedImage("");
     setError(null);
+
+    // Reset file input to allow re-uploading the same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }, [uploadedImage, cleanupImage]);
 
   const onDrop = useCallback(

@@ -3,14 +3,14 @@ import styles from "./ThreadItemView.module.css";
 import TextPart from "./parts/TextPart";
 import ImagePart from "./parts/ImagePart";
 import VideoPart from "./parts/VideoPart";
-import type { ContentPart, ThreadItem } from "../../domain/thread";
+import type { ContentPart, ThreadItem, Role } from "../../domain/thread";
 
-function PartView({ part }: { part: ContentPart }) {
+function PartView({ part, role }: { part: ContentPart; role: Role }) {
   if (part.kind === "text") {
     return <TextPart content={part.content} />;
   }
   if (part.kind === "image") {
-    return <ImagePart {...part} />;
+    return <ImagePart {...part} role={role} />;
   }
   if (part.kind === "video") {
     return <VideoPart url={part.url} path={part.path} />;
@@ -43,7 +43,7 @@ export default function ThreadItemView({ item }: { item: ThreadItem }) {
         <div className={styles.text}>
           {item.parts.map((p, idx) => (
             <div key={idx}>
-              <PartView part={p} />
+              <PartView part={p} role={item.role} />
             </div>
           ))}
         </div>

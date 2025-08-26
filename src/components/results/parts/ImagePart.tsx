@@ -1,8 +1,13 @@
 import React from "react";
 import { BeforeAfterSlider } from "../../image/BeforeAfterSlider";
-import type { ImagePart as ImagePartType } from "../../../domain/thread";
+import type { ImagePart as ImagePartType, Role } from "../../../domain/thread";
+import styles from "./ImagePart.module.css";
 
-export default function ImagePart({ dataUrl, path, originalImage }: ImagePartType) {
+interface ImagePartProps extends ImagePartType {
+  role?: Role;
+}
+
+export default function ImagePart({ dataUrl, path, originalImage, role = "assistant" }: ImagePartProps) {
   // If this is an edited image with original, show before/after slider
   if (dataUrl && originalImage?.dataUrl) {
     return (
@@ -12,7 +17,9 @@ export default function ImagePart({ dataUrl, path, originalImage }: ImagePartTyp
 
   // Regular image display
   if (dataUrl) {
-    return <img src={dataUrl} alt="generated" style={{ maxWidth: "100%" }} />;
+    const imageClass = role === "user" ? styles.userImage : styles.assistantImage;
+    const altText = role === "user" ? "user input" : "generated";
+    return <img src={dataUrl} alt={altText} className={imageClass} />;
   }
   if (path) {
     return (

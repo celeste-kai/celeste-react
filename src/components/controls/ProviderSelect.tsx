@@ -16,7 +16,7 @@ export function ProviderSelect({
   onChange: (next: string | null) => void;
   compact?: boolean;
 }) {
-  const { open, toggle, buttonRef, flipUp, close } = useDropdownMenu("provider");
+  const { open, toggle, buttonRef, containerRef, flipUp, close } = useDropdownMenu("provider");
 
   const current = useMemo(
     () => providers.find((p) => p.id === value),
@@ -26,7 +26,7 @@ export function ProviderSelect({
   const currentLabel = current?.label || ALL_PROVIDERS_LABEL;
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
       <button
         ref={buttonRef}
         type="button"
