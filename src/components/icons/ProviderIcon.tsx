@@ -44,6 +44,7 @@ export function ProviderIcon({
       height={size}
       alt={alt}
       aria-hidden={!alt}
+      loading="lazy"
       style={{
         borderRadius: isSvg ? '0' : '50%',
         objectFit: 'cover',

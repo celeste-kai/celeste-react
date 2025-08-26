@@ -1,41 +1,49 @@
-import { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styles from './BeforeAfterSlider.module.css';
 
-type Props = {
-  beforeImage: string;
-  afterImage: string;
-};
+function BeforeAfterSlider({
+	beforeImage,
+	afterImage,
+}: {
+	beforeImage: string;
+	afterImage: string;
+}) {
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [position, setPosition] = useState(50);
+	const [isDragging, setIsDragging] = useState(false);
 
-export function BeforeAfterSlider({ beforeImage, afterImage }: Props) {
-  const [sliderPosition, setSliderPosition] = useState(15); // Start at 15% to showcase the edit
+	useEffect(() => {
+		const handleMouseUp = () => setIsDragging(false);
+		document.addEventListener('mouseup', handleMouseUp);
+		return () => document.removeEventListener('mouseup', handleMouseUp);
+	}, []);
 
-  return (
-    <div className={styles.container}>
-      {/* Before/original image (full, but clipped on right) */}
-      <img src={beforeImage} alt="Before" />
+	const handleMouseDown = () => setIsDragging(true);
+	const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (!isDragging || !containerRef.current) return;
+		const rect = containerRef.current.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const pct = Math.min(100, Math.max(0, (x / rect.width) * 100));
+		setPosition(pct);
+	};
 
-      {/* After/edited image (clipped on left) */}
-      <div className={styles.afterWrapper} style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}>
-        <img src={afterImage} alt="After" />
-      </div>
-
-      {/* Vertical slider line */}
-      <div className={styles.sliderLine} style={{ left: `${sliderPosition}%` }} />
-
-      {/* Slider handle */}
-      <div className={styles.sliderHandleWrapper} style={{ left: `${sliderPosition}%` }}>
-        <div className={styles.sliderHandleVisual} />
-      </div>
-
-      {/* Invisible range input for interaction */}
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={sliderPosition}
-        onChange={(e) => setSliderPosition(Number(e.target.value))}
-        className={styles.sliderInput}
-      />
-    </div>
-  );
+	return (
+		<div
+			ref={containerRef}
+			className={styles.container}
+			onMouseMove={handleMouseMove}
+			onMouseDown={handleMouseDown}
+			role="region"
+			aria-label="Before after image comparison"
+		>
+			<img src={beforeImage} alt="Before" loading="lazy" />
+			<div className={styles.overlay} style={{ width: `${position}%` }}>
+				<img src={afterImage} alt="After" loading="lazy" />
+			</div>
+			<div className={styles.slider} style={{ left: `${position}%` }} />
+		</div>
+	);
 }
+
+export default BeforeAfterSlider;
+export { BeforeAfterSlider };

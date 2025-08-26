@@ -130,7 +130,7 @@ export default function InputBar({
       <div className={styles.container}>
         {uploadedImage && (
           <div className={styles.imagePreview}>
-            <img src={uploadedImage} alt="Upload" />
+            <img src={uploadedImage} alt="Upload" loading="lazy" />
             <button onClick={handleImageClear} className={styles.clearImage} type="button">
               ×
             </button>

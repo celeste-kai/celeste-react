@@ -1,7 +1,10 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+const LazyMarkdown = React.lazy(() => import('../../common/LazyMarkdown'));
 
 export default function TextPart({ content }: { content: string }) {
-  return <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>;
+  return (
+    <React.Suspense fallback={<span /> }>
+      <LazyMarkdown>{content}</LazyMarkdown>
+    </React.Suspense>
+  );
 }
