@@ -8,8 +8,8 @@ import type { ImageMode } from "../../lib/capability";
 
 type Props = {
   inputValue: string;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onKeyPress: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onSend: (prompt: string, imageData?: string) => void;
   onRefresh: () => void;
   selectedModel: string;

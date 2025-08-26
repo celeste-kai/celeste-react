@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import styles from "../chat/ChatInput.module.css";
 import { ProviderSelect } from "../controls/ProviderSelect";
 import { ModelSelect } from "../controls/ModelSelect";
@@ -7,8 +7,8 @@ import type { ModelOut, ProviderOut } from "../../types/api";
 
 type InputBarViewProps = {
   inputValue: string;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onKeyPress: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   placeholder: string;
   onSend: () => void;
 
@@ -66,6 +66,24 @@ export default function InputBarView({
   isLoadingModels = false,
   onSelectModel,
 }: InputBarViewProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to recalculate
+      textarea.style.height = 'auto';
+
+      // Calculate new height based on scroll height
+      const newHeight = Math.min(textarea.scrollHeight, 120); // Max height of ~6 lines
+      textarea.style.height = `${newHeight}px`;
+
+      // Add overflow when content exceeds max height
+      textarea.style.overflowY = textarea.scrollHeight > 120 ? 'auto' : 'hidden';
+    }
+  }, [inputValue]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -84,13 +102,15 @@ export default function InputBarView({
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
-          <input
-            type="text"
+          <textarea
+            ref={textareaRef}
             className={styles.textInput}
             placeholder={placeholder}
             value={inputValue}
             onChange={onInputChange}
             onKeyPress={onKeyPress}
+            rows={1}
+            style={{ resize: "none" }}
           />
         </div>
 

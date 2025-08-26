@@ -6,7 +6,7 @@ export function useInputHandling() {
   const [inputValue, setInputValue] = useState("");
   const { submit } = useInteraction();
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
   }, []);
 
