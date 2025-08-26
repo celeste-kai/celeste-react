@@ -6,6 +6,7 @@ import {
   useInputHandling,
   useSelections,
 } from "./hooks";
+import useImageUpload from "./common/hooks/useImageUpload";
 
 function App() {
   // Custom hooks for all complex logic
@@ -22,11 +23,24 @@ function App() {
 
   const { models, providers, isLoadingModels, showText, showImage, showVideo } =
     useModelSelection();
-  const { inputValue, handleInputChange, handleKeyPress, handleSend, handleRefresh } =
-    useInputHandling();
+
   const { draggedImage, clearDraggedImage } = useDragAndDrop({
     onCapabilityChange: setSelectedCapability,
   });
+
+  // Image upload state for the entire app
+  const image = useImageUpload({
+    externalImage: selectedCapability === "image" ? draggedImage : null,
+    onHandled: clearDraggedImage,
+  });
+
+  const { inputValue, handleInputChange, handleKeyPress, handleSend, handleRefresh } =
+    useInputHandling({
+      selectedCapability,
+      imageMode,
+      uploadedImage: image.uploadedImage,
+      onClearImage: image.clearImage,
+    });
 
   return (
     <div className="app">
@@ -55,8 +69,14 @@ function App() {
         showVideo={showVideo}
         imageMode={imageMode}
         onImageModeChange={setImageMode}
-        externalImage={draggedImage}
-        onExternalImageHandled={clearDraggedImage}
+        uploadedImage={image.uploadedImage}
+        onClearImage={image.clearImage}
+        fileInputRef={image.fileInputRef}
+        onFileSelected={image.selectFile}
+        isDragging={image.isDragging}
+        onDrop={image.onDrop}
+        onDragOver={image.onDragOver}
+        onDragLeave={image.onDragLeave}
       />
     </div>
   );

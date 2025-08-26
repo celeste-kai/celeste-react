@@ -19,7 +19,7 @@ export function ModelSelect({
   isLoading?: boolean;
   onSelect: (m: ModelOut) => void;
 }) {
-  const { open, toggle, buttonRef, flipUp, close } = useDropdownMenu("model");
+  const { open, toggle, buttonRef, containerRef, flipUp, close } = useDropdownMenu("model");
 
   const current = useMemo(() => models.find((m) => m.id === value), [models, value]);
   const currentLabel = isLoading
@@ -27,7 +27,7 @@ export function ModelSelect({
     : current?.display_name || current?.id || SELECT_MODEL_LABEL;
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={containerRef}>
       <button
         ref={buttonRef}
         type="button"

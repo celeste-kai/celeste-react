@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import InputBarView from "./InputBarView";
 import usePromptPlaceholder from "../../common/hooks/usePromptPlaceholder";
-import useImageUpload from "../../common/hooks/useImageUpload";
 import { useSelectionsStore } from "../../lib/store/selections";
 import type { ModelOut, ProviderOut } from "../../types/api";
 import type { ImageMode } from "../../lib/capability";
@@ -10,7 +9,7 @@ type Props = {
   inputValue: string;
   onInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyPress: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  onSend: (prompt: string, imageData?: string) => void;
+  onSend: (prompt: string) => void;
   onRefresh: () => void;
   selectedModel: string;
   models?: ModelOut[];
@@ -25,8 +24,15 @@ type Props = {
   showText?: boolean;
   showImage?: boolean;
   showVideo?: boolean;
-  externalImage?: string | null;
-  onExternalImageHandled?: () => void;
+  // Image upload props passed from App
+  uploadedImage: string;
+  onClearImage: () => void;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  onFileSelected: (file: File) => void;
+  isDragging: boolean;
+  onDrop: (e: React.DragEvent) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: (e: React.DragEvent) => void;
 };
 
 export default function InputBar({
@@ -49,33 +55,29 @@ export default function InputBar({
   showText = true,
   showImage = true,
   showVideo = true,
-  externalImage,
-  onExternalImageHandled,
+  uploadedImage,
+  onClearImage,
+  fileInputRef,
+  onFileSelected,
+  isDragging,
+  onDrop,
+  onDragOver,
+  onDragLeave,
 }: Props) {
-  const image = useImageUpload({
-    externalImage: selectedCapability === "image" ? externalImage : null,
-    onHandled: onExternalImageHandled,
-  });
-
   useEffect(() => {
     if (selectedCapability === "image" && onImageModeChange) {
-      onImageModeChange(image.uploadedImage ? "edit" : "generate");
+      onImageModeChange(uploadedImage ? "edit" : "generate");
     }
-  }, [image.uploadedImage, selectedCapability, onImageModeChange]);
+  }, [uploadedImage, selectedCapability, onImageModeChange]);
 
   const placeholder = usePromptPlaceholder({
     capability: selectedCapability,
     imageMode,
-    hasImage: !!image.uploadedImage,
+    hasImage: !!uploadedImage,
   });
 
   const handleSend = () => {
-    if (selectedCapability === "image" && imageMode === "edit" && image.uploadedImage) {
-      onSend(inputValue, image.uploadedImage);
-      image.clearImage();
-    } else {
-      onSend(inputValue);
-    }
+    onSend(inputValue);
   };
 
   return (
@@ -90,14 +92,14 @@ export default function InputBar({
       showText={showText}
       showImage={showImage}
       showVideo={showVideo}
-      uploadedImage={image.uploadedImage}
-      onClearImage={image.clearImage}
-      fileInputRef={image.fileInputRef}
-      onFileSelected={image.selectFile}
-      isDragging={image.isDragging}
-      onDrop={image.onDrop}
-      onDragOver={image.onDragOver}
-      onDragLeave={image.onDragLeave}
+      uploadedImage={uploadedImage}
+      onClearImage={onClearImage}
+      fileInputRef={fileInputRef}
+      onFileSelected={onFileSelected}
+      isDragging={isDragging}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
       providers={providers || []}
       selectedProvider={selectedProvider}
       onChangeProvider={onChangeProvider}
