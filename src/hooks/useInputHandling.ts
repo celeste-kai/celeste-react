@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { useInteraction } from '../controllers/interaction';
+import { useState, useCallback } from "react";
+import type React from "react";
+import { useInteraction } from "../controllers/interaction";
 
 export function useInputHandling() {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const { submit } = useInteraction();
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -11,10 +12,10 @@ export function useInputHandling() {
 
   const handleKeyPress = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         submit(inputValue);
-        setInputValue('');
+        setInputValue("");
       }
     },
     [inputValue, submit],
@@ -23,13 +24,13 @@ export function useInputHandling() {
   const handleSend = useCallback(
     (prompt: string, imageData?: any) => {
       submit(prompt, imageData);
-      setInputValue('');
+      setInputValue("");
     },
     [submit],
   );
 
   const handleRefresh = useCallback(() => {
-    setInputValue('');
+    setInputValue("");
   }, []);
 
   return {

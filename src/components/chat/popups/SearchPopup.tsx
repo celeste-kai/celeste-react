@@ -1,16 +1,13 @@
-import styles from './Popup.module.css';
+import styles from "./Popup.module.css";
+import Popup from "../../../common/components/Popup/Popup";
 
 type SearchPopupProps = { onClose: () => void };
 
 function SearchPopup({ onClose }: SearchPopupProps) {
   return (
-    <div className={styles.popup}>
-      <h3 className={styles.title}>🔍 Search</h3>
+    <Popup title="🔍 Search" onClose={onClose}>
       <input className={styles.input} type="text" placeholder="Search..." />
-      <button className={styles.button} type="button" onClick={onClose}>
-        Close
-      </button>
-    </div>
+    </Popup>
   );
 }
 

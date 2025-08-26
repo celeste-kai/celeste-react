@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import type { ModelOut } from '../../types/api';
-import type { ImageMode } from '../capability';
+import { create } from "zustand";
+import type { ModelOut } from "../../types/api";
+import type { ImageMode } from "../capability";
 
-export type CapabilityId = 'text' | 'image' | 'video';
+export type CapabilityId = "text" | "image" | "video";
 
 export interface SelectionsState {
   capability: CapabilityId;
@@ -18,40 +18,40 @@ export interface SelectionsState {
   selectModelFromCatalog: (model: ModelOut) => void;
 }
 
-const STORAGE_KEY = 'celeste_selections_v3';
+const STORAGE_KEY = "celeste_selections_v3";
 
 function loadInitial(): Pick<
   SelectionsState,
-  'capability' | 'provider' | 'model' | 'providerFilter' | 'imageMode'
+  "capability" | "provider" | "model" | "providerFilter" | "imageMode"
 > {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return {
-        capability: 'text',
+        capability: "text",
         provider: null,
         model: null,
         providerFilter: null,
-        imageMode: 'generate',
+        imageMode: "generate",
       };
     }
     const parsed = JSON.parse(raw);
     const initial = {
-      capability: parsed.capability ?? 'text',
+      capability: parsed.capability ?? "text",
       provider: parsed.provider ?? null,
       model: parsed.model ?? null,
       providerFilter: parsed.providerFilter ?? null,
-      imageMode: parsed.imageMode ?? 'generate',
+      imageMode: parsed.imageMode ?? "generate",
     } as const;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
     return initial;
   } catch {
     return {
-      capability: 'text',
+      capability: "text",
       provider: null,
       model: null,
       providerFilter: null,
-      imageMode: 'generate',
+      imageMode: "generate",
     };
   }
 }

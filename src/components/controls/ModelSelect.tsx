@@ -1,69 +1,50 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useUiStore } from '../../lib/store/ui';
-import { useSelectionsStore } from '../../lib/store/selections';
-import styles from './ProviderSelect.module.css';
-import type { ModelOut } from '../../types/api';
+import React, { useMemo } from "react";
+import useDropdownMenu from "../../common/hooks/useDropdownMenu";
+import styles from "./ProviderSelect.module.css";
+import type { ModelOut } from "../../types/api";
+import {
+  CHEVRON,
+  LOADING_LABEL,
+  SELECT_MODEL_LABEL,
+} from "../../common/constants/strings";
 
 export function ModelSelect({
   models,
   value,
   isLoading = false,
+  onSelect,
 }: {
   models: ModelOut[];
   value: string;
   isLoading?: boolean;
+  onSelect: (m: ModelOut) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const openMenu = useUiStore((s) => s.openMenu);
-  const setOpenMenu = useUiStore((s) => s.setOpenMenu);
-  const [flipUp, setFlipUp] = useState(false);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
-
-  useLayoutEffect(() => {
-    if (!open) {
-      return;
-    }
-    const btn = btnRef.current;
-    if (!btn) {
-      return;
-    }
-    const rect = btn.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    setFlipUp(spaceBelow < 200);
-  }, [open]);
-
-  // Close if another menu opens
-  useEffect(() => {
-    if (openMenu !== 'model' && open) {
-      setOpen(false);
-    }
-  }, [openMenu, open]);
+  const { open, toggle, buttonRef, flipUp, close } = useDropdownMenu("model");
 
   const current = useMemo(() => models.find((m) => m.id === value), [models, value]);
   const currentLabel = isLoading
-    ? 'Loading…'
-    : current?.display_name || current?.id || 'Select model';
+    ? LOADING_LABEL
+    : current?.display_name || current?.id || SELECT_MODEL_LABEL;
 
   return (
     <div className={styles.container}>
       <button
-        ref={btnRef}
+        ref={buttonRef}
         type="button"
         className={styles.button}
-        onClick={() => {
-          const next = !open;
-          setOpen(next);
-          setOpenMenu(next ? 'model' : null);
-        }}
+        onClick={toggle}
         aria-expanded={open}
         aria-haspopup="menu"
         title={currentLabel}
       >
         <span>{currentLabel}</span>
-        <span className={styles.chevron}>⌄</span>
+        <span className={styles.chevron}>{CHEVRON}</span>
       </button>
       {open && (
-        <div className={`${styles.menu} ${flipUp ? styles.menuUp : styles.menuDown}`} role="menu">
+        <div
+          className={`${styles.menu} ${flipUp ? styles.menuUp : styles.menuDown}`}
+          role="menu"
+        >
           {models.length === 0 && (
             <div className={styles.item} aria-disabled>
               No models
@@ -74,9 +55,8 @@ export function ModelSelect({
               key={m.id}
               className={styles.item}
               onClick={() => {
-                // Lock provider to the model's provider and set model id in the store
-                useSelectionsStore.getState().selectModelFromCatalog(m);
-                setOpen(false);
+                onSelect(m);
+                close();
               }}
             >
               <span>{m.display_name || m.id}</span>

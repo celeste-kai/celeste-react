@@ -1,37 +1,38 @@
-import React from 'react';
-import styles from './ThreadItemView.module.css';
-import TextPart from './parts/TextPart';
-import ImagePart from './parts/ImagePart';
-import VideoPart from './parts/VideoPart';
-import type { ContentPart, ThreadItem } from '../../domain/thread';
+import React from "react";
+import styles from "./ThreadItemView.module.css";
+import TextPart from "./parts/TextPart";
+import ImagePart from "./parts/ImagePart";
+import VideoPart from "./parts/VideoPart";
+import type { ContentPart, ThreadItem } from "../../domain/thread";
 
 function PartView({ part }: { part: ContentPart }) {
-  if (part.kind === 'text') {
+  if (part.kind === "text") {
     return <TextPart content={part.content} />;
   }
-  if (part.kind === 'image') {
+  if (part.kind === "image") {
     return <ImagePart {...part} />;
   }
-  if (part.kind === 'video') {
+  if (part.kind === "video") {
     return <VideoPart url={part.url} path={part.path} />;
   }
   return null;
 }
 
 export default function ThreadItemView({ item }: { item: ThreadItem }) {
-  const sideClass = item.role === 'user' ? styles.user : styles.assistant;
-  const cardClass = item.role === 'user' ? `${styles.card} ${styles.userCard}` : styles.card;
-  const showAvatar = item.role !== 'user';
+  const sideClass = item.role === "user" ? styles.user : styles.assistant;
+  const cardClass =
+    item.role === "user" ? `${styles.card} ${styles.userCard}` : styles.card;
+  const showAvatar = item.role !== "user";
   const firstPart = item.parts && item.parts.length > 0 ? item.parts[0] : undefined;
   const isPendingDraft =
-    item.role === 'assistant' &&
+    item.role === "assistant" &&
     firstPart &&
-    (firstPart as ContentPart).kind === 'text' &&
+    (firstPart as ContentPart).kind === "text" &&
     !(firstPart as any).content;
   return (
     <div
       className={`${styles.item} ${sideClass}`}
-      aria-live={isPendingDraft ? 'polite' : undefined}
+      aria-live={isPendingDraft ? "polite" : undefined}
     >
       {showAvatar && (
         <div className={styles.avatar} aria-hidden>

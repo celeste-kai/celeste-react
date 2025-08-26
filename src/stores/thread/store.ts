@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { generateId } from '../../lib/id';
-import type { CapabilityId } from '../../lib/store/selections';
+import { create } from "zustand";
+import { generateId } from "../../lib/id";
+import type { CapabilityId } from "../../lib/store/selections";
 import type {
   ContentPart,
   ImagePart,
@@ -9,7 +9,7 @@ import type {
   ThreadItem,
   ThreadItemInput,
   VideoPart,
-} from '../../domain/thread';
+} from "../../domain/thread";
 
 export interface ThreadState {
   items: ThreadItem[];
@@ -19,11 +19,11 @@ export interface ThreadState {
     params: { role: Role; capability: CapabilityId; provider: string; model: string },
   ) => void;
   addImages: (
-    images: Array<Omit<ImagePart, 'kind'>>,
+    images: Array<Omit<ImagePart, "kind">>,
     params: { role: Role; capability: CapabilityId; provider: string; model: string },
   ) => void;
   addVideos: (
-    videos: Array<Omit<VideoPart, 'kind'>>,
+    videos: Array<Omit<VideoPart, "kind">>,
     params: { role: Role; capability: CapabilityId; provider: string; model: string },
   ) => void;
   addAssistantDraft: (params: {
@@ -48,7 +48,7 @@ export const useThreadStore = create<ThreadState>((set) => ({
     set((state) => ({ items: [...state.items, finalItem] }));
   },
   addText: (content, params) => {
-    const part: TextPart = { kind: 'text', content };
+    const part: TextPart = { kind: "text", content };
     set((state) => ({
       items: [
         ...state.items,
@@ -65,7 +65,7 @@ export const useThreadStore = create<ThreadState>((set) => ({
     }));
   },
   addImages: (images, params) => {
-    const parts: ImagePart[] = images.map((img) => ({ kind: 'image', ...img }));
+    const parts: ImagePart[] = images.map((img) => ({ kind: "image", ...img }));
     set((state) => ({
       items: [
         ...state.items,
@@ -82,7 +82,7 @@ export const useThreadStore = create<ThreadState>((set) => ({
     }));
   },
   addVideos: (videos, params) => {
-    const parts: VideoPart[] = videos.map((v) => ({ kind: 'video', ...v }));
+    const parts: VideoPart[] = videos.map((v) => ({ kind: "video", ...v }));
     set((state) => ({
       items: [
         ...state.items,
@@ -104,11 +104,11 @@ export const useThreadStore = create<ThreadState>((set) => ({
     const draft: ThreadItem = {
       id,
       createdAt: now,
-      role: 'assistant',
+      role: "assistant",
       capability: params.capability,
       provider: params.provider,
       model: params.model,
-      parts: [{ kind: 'text', content: '' }],
+      parts: [{ kind: "text", content: "" }],
     };
     set((state) => ({ items: [...state.items, draft] }));
     return id;
@@ -120,12 +120,15 @@ export const useThreadStore = create<ThreadState>((set) => ({
           return it;
         }
         const parts = it.parts ? [...it.parts] : [];
-        const idx = parts.findIndex((p) => (p as ContentPart).kind === 'text');
+        const idx = parts.findIndex((p) => (p as ContentPart).kind === "text");
         if (idx >= 0) {
           const tp = parts[idx] as TextPart;
-          parts[idx] = { ...tp, content: String(tp.content || '') + String(delta || '') };
+          parts[idx] = {
+            ...tp,
+            content: String(tp.content || "") + String(delta || ""),
+          };
         } else {
-          parts.push({ kind: 'text', content: String(delta || '') });
+          parts.push({ kind: "text", content: String(delta || "") });
         }
         return { ...it, parts } as ThreadItem;
       }),

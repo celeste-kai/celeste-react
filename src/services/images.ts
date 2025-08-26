@@ -1,5 +1,5 @@
-import { API_BASE_URL, handleResponse } from './base';
-import type { ImageGenerateResponse, ImageEditResponse } from '../types/api';
+import { API_BASE_URL, handleResponse } from "./base";
+import type { ImageGenerateResponse, ImageEditResponse } from "../types/api";
 
 export async function generateImages(args: {
   provider: string;
@@ -8,8 +8,8 @@ export async function generateImages(args: {
   options?: Record<string, unknown>;
 }): Promise<ImageGenerateResponse> {
   const res = await fetch(`${API_BASE_URL}/v1/images/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(args),
   });
   return handleResponse(res);
@@ -23,8 +23,8 @@ export async function editImage(args: {
   options?: Record<string, unknown>;
 }): Promise<ImageEditResponse> {
   const res = await fetch(`${API_BASE_URL}/v1/images/edit`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(args),
   });
   return handleResponse(res);

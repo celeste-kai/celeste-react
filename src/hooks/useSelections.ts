@@ -1,4 +1,4 @@
-import { useSelectionsStore } from '../lib/store/selections';
+import { useSelectionsStore } from "../lib/store/selections";
 
 export function useSelections() {
   const selectedCapability = useSelectionsStore((s) => s.capability);

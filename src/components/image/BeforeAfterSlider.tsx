@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import styles from './BeforeAfterSlider.module.css';
+import { useState } from "react";
+import styles from "./BeforeAfterSlider.module.css";
 
 type Props = {
   beforeImage: string;
@@ -15,7 +15,10 @@ export function BeforeAfterSlider({ beforeImage, afterImage }: Props) {
       <img src={beforeImage} alt="Before" />
 
       {/* After/edited image (clipped on left) */}
-      <div className={styles.afterWrapper} style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}>
+      <div
+        className={styles.afterWrapper}
+        style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
+      >
         <img src={afterImage} alt="After" />
       </div>
 
@@ -23,7 +26,10 @@ export function BeforeAfterSlider({ beforeImage, afterImage }: Props) {
       <div className={styles.sliderLine} style={{ left: `${sliderPosition}%` }} />
 
       {/* Slider handle */}
-      <div className={styles.sliderHandleWrapper} style={{ left: `${sliderPosition}%` }}>
+      <div
+        className={styles.sliderHandleWrapper}
+        style={{ left: `${sliderPosition}%` }}
+      >
         <div className={styles.sliderHandleVisual} />
       </div>
 

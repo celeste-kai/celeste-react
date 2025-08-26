@@ -1,11 +1,11 @@
-import { API_BASE_URL, handleResponse } from './base';
+import { API_BASE_URL, handleResponse } from "./base";
 import type {
   CapabilityOut,
   ProviderOut,
   ModelOut,
   HealthResponse,
   ModelFilters,
-} from '../types/api';
+} from "../types/api";
 
 export async function getHealth(): Promise<HealthResponse> {
   const res = await fetch(`${API_BASE_URL}/v1/health`);
@@ -25,10 +25,10 @@ export async function listProviders(): Promise<ProviderOut[]> {
 export async function listModels(filters: ModelFilters = {}): Promise<ModelOut[]> {
   const params = new URLSearchParams();
   if (filters.capability) {
-    params.set('capability', filters.capability);
+    params.set("capability", filters.capability);
   }
   if (filters.provider) {
-    params.set('provider', filters.provider);
+    params.set("provider", filters.provider);
   }
   const queryString = params.toString();
   const url = queryString

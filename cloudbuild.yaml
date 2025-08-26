@@ -1,0 +1,51 @@
+steps:
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/celeste/celeste-react:${COMMIT_SHA:-latest}",
+        ".",
+      ]
+
+  # Push the container image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/$PROJECT_ID/celeste/celeste-react:${COMMIT_SHA:-latest}",
+      ]
+
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "celeste-react"
+      - "--image"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/celeste/celeste-react:${COMMIT_SHA:-latest}"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--port"
+      - "80"
+      - "--memory"
+      - "512Mi"
+      - "--cpu"
+      - "0.5"
+      - "--min-instances"
+      - "0"
+      - "--max-instances"
+      - "5"
+      - "--set-env-vars"
+      - "VITE_API_BASE_URL=https://celeste-api-324617609570.us-central1.run.app"
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/celeste/celeste-react:${COMMIT_SHA:-latest}"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
