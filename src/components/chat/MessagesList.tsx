@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+const LazyMarkdown = React.lazy(() => import('../common/LazyMarkdown'));
 import styles from './MessagesList.module.css';
 
 export type ChatMessage = {
@@ -40,7 +39,9 @@ export default function MessagesList({ messages, isGenerating = false }: Message
             )}
             <div className={styles.card}>
               <div className={styles.text}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                <React.Suspense fallback={<span /> }>
+                  <LazyMarkdown>{m.content}</LazyMarkdown>
+                </React.Suspense>
               </div>
             </div>
           </div>

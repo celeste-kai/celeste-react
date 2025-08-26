@@ -10,7 +10,7 @@ export default function ImagePart({ dataUrl, path, originalImage }: ImagePartTyp
 
   // Regular image display
   if (dataUrl) {
-    return <img src={dataUrl} alt="generated" style={{ maxWidth: '100%' }} />;
+    return <img src={dataUrl} alt="generated" style={{ maxWidth: '100%' }} loading="lazy" />;
   }
   if (path) {
     return (
