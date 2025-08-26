@@ -86,7 +86,10 @@
   background: transparent;
   border: none;
   color: #ffffff;
+  font-family: inherit;
   font-size: var(--font-size-lg);
+  font-weight: normal;
+  line-height: 1.5;
   outline: none;
   padding: var(--space-2) 0;
 }
