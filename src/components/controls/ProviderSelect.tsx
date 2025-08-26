@@ -1,8 +1,9 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useUiStore } from '../../lib/store/ui';
-import ProviderIcon from '../icons/ProviderIcon';
-import styles from './ProviderSelect.module.css';
-import type { ProviderOut } from '../../types/api';
+import React, { useMemo } from "react";
+import useDropdownMenu from "../../common/hooks/useDropdownMenu";
+import ProviderIcon from "../icons/ProviderIcon";
+import { ALL_PROVIDERS_LABEL, CHEVRON, STAR } from "../../common/constants/strings";
+import styles from "./ProviderSelect.module.css";
+import type { ProviderOut } from "../../types/api";
 
 export function ProviderSelect({
   providers,
@@ -15,66 +16,48 @@ export function ProviderSelect({
   onChange: (next: string | null) => void;
   compact?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-  const openMenu = useUiStore((s) => s.openMenu);
-  const setOpenMenu = useUiStore((s) => s.setOpenMenu);
-  const [flipUp, setFlipUp] = useState(false);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const { open, toggle, buttonRef, flipUp, close } = useDropdownMenu("provider");
 
-  useLayoutEffect(() => {
-    if (!open) {
-      return;
-    }
-    const btn = btnRef.current;
-    if (!btn) {
-      return;
-    }
-    const rect = btn.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    setFlipUp(spaceBelow < 200); // if less than 200px, open upwards
-  }, [open]);
-
-  // Close if another menu opens
-  useEffect(() => {
-    if (openMenu !== 'provider' && open) {
-      setOpen(false);
-    }
-  }, [openMenu, open]);
-
-  const current = useMemo(() => providers.find((p) => p.id === value), [providers, value]);
-  const currentId = current ? current.id : 'celeste';
-  const currentLabel = current?.label || 'All providers';
+  const current = useMemo(
+    () => providers.find((p) => p.id === value),
+    [providers, value],
+  );
+  const currentId = current ? current.id : "celeste";
+  const currentLabel = current?.label || ALL_PROVIDERS_LABEL;
 
   return (
     <div className={styles.container}>
       <button
-        ref={btnRef}
+        ref={buttonRef}
         type="button"
-        className={`${styles.button} ${compact ? styles.iconOnly : ''}`}
-        onClick={() => {
-          const next = !open;
-          setOpen(next);
-          setOpenMenu(next ? 'provider' : null);
-        }}
+        className={`${styles.button} ${compact ? styles.iconOnly : ""}`}
+        onClick={toggle}
         aria-expanded={open}
         aria-haspopup="menu"
         title={currentLabel}
       >
-        {!value ? <span className={styles.celesteStar}>✴</span> : <ProviderIcon id={currentId} />}
+        {!value ? (
+          <span className={styles.celesteStar}>{STAR}</span>
+        ) : (
+          <ProviderIcon id={currentId} />
+        )}
         {!compact && <span>{currentLabel}</span>}
-        <span className={styles.chevron}>⌄</span>
+        <span className={styles.chevron}>{CHEVRON}</span>
       </button>
       {open && (
-        <div className={`${styles.menu} ${flipUp ? styles.menuUp : styles.menuDown}`} role="menu">
+        <div
+          className={`${styles.menu} ${flipUp ? styles.menuUp : styles.menuDown}`}
+          role="menu"
+        >
           <button
             className={styles.item}
             onClick={() => {
               onChange(null);
-              setOpen(false);
+              close();
             }}
           >
-            <span className={styles.celesteStar}>✴</span>
-            <span>All providers</span>
+            <span className={styles.celesteStar}>{STAR}</span>
+            <span>{ALL_PROVIDERS_LABEL}</span>
           </button>
           {providers.map((p) => (
             <button
@@ -82,7 +65,7 @@ export function ProviderSelect({
               className={styles.item}
               onClick={() => {
                 onChange(p.id);
-                setOpen(false);
+                close();
               }}
             >
               <ProviderIcon id={p.id} />

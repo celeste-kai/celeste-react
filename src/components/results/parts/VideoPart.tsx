@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function VideoPart({ url, path }: { url?: string; path?: string }) {
   const src = url || path;
@@ -7,5 +7,5 @@ export default function VideoPart({ url, path }: { url?: string; path?: string }
     return null;
   }
 
-  return <video src={src} controls playsInline style={{ maxWidth: '100%' }} />;
+  return <video src={src} controls playsInline style={{ maxWidth: "100%" }} />;
 }

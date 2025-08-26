@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
-import { useSelectionsStore } from '../lib/store/selections';
-import { useTextController } from './textController';
-import { useImageController } from './imageController';
-import { useImageEditController } from './imageEditController';
-import { useVideoController } from './videoController';
+import { useCallback, useMemo } from "react";
+import { useSelectionsStore } from "../lib/store/selections";
+import { useTextController } from "./textController";
+import { useImageController } from "./imageController";
+import { useImageEditController } from "./imageEditController";
+import { useVideoController } from "./videoController";
 
 export function useInteraction() {
   const capability = useSelectionsStore((s) => s.capability);
@@ -16,11 +16,11 @@ export function useInteraction() {
 
   const submit = useCallback(
     (prompt: string, imageData?: string) => {
-      if (capability === 'text') {
+      if (capability === "text") {
         return text.execute(prompt);
       }
-      if (capability === 'image') {
-        if (imageMode === 'edit' && imageData) {
+      if (capability === "image") {
+        if (imageMode === "edit" && imageData) {
           return imageEdit.execute(prompt, imageData);
         }
         return image.execute(prompt);
@@ -31,7 +31,11 @@ export function useInteraction() {
   );
 
   const isGenerating = useMemo(
-    () => text.isGenerating || image.isGenerating || imageEdit.isEditing || video.isGenerating,
+    () =>
+      text.isGenerating ||
+      image.isGenerating ||
+      imageEdit.isEditing ||
+      video.isGenerating,
     [image.isGenerating, imageEdit.isEditing, text.isGenerating, video.isGenerating],
   );
 

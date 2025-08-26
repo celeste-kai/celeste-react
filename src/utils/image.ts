@@ -4,7 +4,7 @@ export async function fileToBase64(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64 = reader.result as string;
-      const base64Data = base64.split(',')[1]; // Remove data URL prefix
+      const base64Data = base64.split(",")[1]; // Remove data URL prefix
       resolve(base64Data);
     };
     reader.readAsDataURL(file);
@@ -22,18 +22,21 @@ export async function fileToDataUrl(file: File): Promise<string> {
 
 // Extract base64 from data URL
 export function extractBase64FromDataUrl(dataUrl: string): string {
-  return dataUrl.split(',')[1];
+  return dataUrl.split(",")[1];
 }
 
 // Convert base64 to data URL with proper mime type
-export function base64ToDataUrl(base64: string, mimeType: string = 'image/png'): string {
+export function base64ToDataUrl(
+  base64: string,
+  mimeType: string = "image/png",
+): string {
   return `data:${mimeType};base64,${base64}`;
 }
 
 // Safely convert API response data to data URL
 export function safeApiDataToDataUrl(
   data: unknown,
-  mimeType: string = 'image/png',
+  mimeType: string = "image/png",
 ): string | undefined {
   if (!data) {
     return undefined;
@@ -41,7 +44,7 @@ export function safeApiDataToDataUrl(
 
   try {
     const dataStr = String(data);
-    return dataStr.startsWith('data:') ? dataStr : base64ToDataUrl(dataStr, mimeType);
+    return dataStr.startsWith("data:") ? dataStr : base64ToDataUrl(dataStr, mimeType);
   } catch {
     return undefined;
   }

@@ -1,14 +1,14 @@
-import { useCallback, useState } from 'react';
-import { useSelectionsStore } from '../lib/store/selections';
-import { useThreadStore } from '../stores/thread';
-import { useExecStore } from '../stores/exec';
-import { editImage } from '../services/images';
-import { extractBase64FromDataUrl, base64ToDataUrl } from '../utils/image';
-import { validateImageEditParams } from '../utils/validation';
+import { useCallback, useState } from "react";
+import { useSelectionsStore } from "../lib/store/selections";
+import { useThreadStore } from "../stores/thread";
+import { useExecStore } from "../stores/exec";
+import { editImage } from "../services/images";
+import { extractBase64FromDataUrl, base64ToDataUrl } from "../utils/image";
+import { validateImageEditParams } from "../utils/validation";
 
 export function useImageEditController() {
-  const provider = useSelectionsStore((s) => s.provider) || '';
-  const model = useSelectionsStore((s) => s.model) || '';
+  const provider = useSelectionsStore((s) => s.provider) || "";
+  const model = useSelectionsStore((s) => s.model) || "";
   const addItem = useThreadStore((s) => s.addItem);
   const [isEditing, setIsEditing] = useState(false);
   const setGlobalGenerating = useExecStore((s) => s.setIsGenerating);
@@ -30,13 +30,13 @@ export function useImageEditController() {
 
       // Add user message with image and prompt
       addItem({
-        role: 'user',
-        capability: 'image',
+        role: "user",
+        capability: "image",
         provider,
         model,
         parts: [
-          { kind: 'image', dataUrl: imageDataUrl },
-          { kind: 'text', content: trimmedPrompt },
+          { kind: "image", dataUrl: imageDataUrl },
+          { kind: "text", content: trimmedPrompt },
         ],
       });
 
@@ -44,19 +44,26 @@ export function useImageEditController() {
       setGlobalGenerating(true);
 
       // No error handling - let it fail
-      const res = await editImage({ provider, model, prompt: trimmedPrompt, image: base64 });
+      const res = await editImage({
+        provider,
+        model,
+        prompt: trimmedPrompt,
+        image: base64,
+      });
 
-      const editedDataUrl = res.image.data ? base64ToDataUrl(res.image.data) : undefined;
+      const editedDataUrl = res.image.data
+        ? base64ToDataUrl(res.image.data)
+        : undefined;
 
       // Add edited result with original reference
       addItem({
-        role: 'assistant',
-        capability: 'image',
+        role: "assistant",
+        capability: "image",
         provider,
         model,
         parts: [
           {
-            kind: 'image',
+            kind: "image",
             dataUrl: editedDataUrl,
             originalImage: { dataUrl: imageDataUrl },
             editPrompt: trimmedPrompt,
@@ -68,7 +75,7 @@ export function useImageEditController() {
       setIsEditing(false);
       setGlobalGenerating(false);
     },
-    [addItem, model, provider],
+    [addItem, model, provider, setGlobalGenerating],
   );
 
   return { execute, isEditing };

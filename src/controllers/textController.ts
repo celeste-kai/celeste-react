@@ -1,13 +1,13 @@
-import { useCallback, useRef, useState } from 'react';
-import { useSelectionsStore } from '../lib/store/selections';
-import { useThreadStore } from '../stores/thread';
-import { useExecStore } from '../stores/exec';
-import { streamText } from '../services/text';
-import { validateControllerParams } from '../utils/validation';
+import { useCallback, useRef, useState } from "react";
+import { useSelectionsStore } from "../lib/store/selections";
+import { useThreadStore } from "../stores/thread";
+import { useExecStore } from "../stores/exec";
+import { streamText } from "../services/text";
+import { validateControllerParams } from "../utils/validation";
 
 export function useTextController() {
-  const provider = useSelectionsStore((s) => s.provider) || '';
-  const model = useSelectionsStore((s) => s.model) || '';
+  const provider = useSelectionsStore((s) => s.provider) || "";
+  const model = useSelectionsStore((s) => s.model) || "";
   const addItem = useThreadStore((s) => s.addItem);
   const addAssistantDraft = useThreadStore((s) => s.addAssistantDraft);
   const appendTextToItem = useThreadStore((s) => s.appendTextToItem);
@@ -21,24 +21,28 @@ export function useTextController() {
 
   const execute = useCallback(
     async (prompt: string) => {
-      const { isValid, trimmedPrompt } = validateControllerParams({ prompt, provider, model });
+      const { isValid, trimmedPrompt } = validateControllerParams({
+        prompt,
+        provider,
+        model,
+      });
       if (!isValid) {
         return;
       }
 
       addItem({
-        role: 'user',
-        capability: 'text',
+        role: "user",
+        capability: "text",
         provider,
         model,
-        parts: [{ kind: 'text', content: trimmedPrompt }],
+        parts: [{ kind: "text", content: trimmedPrompt }],
       });
 
       setIsGenerating(true);
       setGlobalGenerating(true);
       const controller = new AbortController();
       abortRef.current = controller;
-      const draftId = addAssistantDraft({ capability: 'text', provider, model });
+      const draftId = addAssistantDraft({ capability: "text", provider, model });
       try {
         let first = true;
         for await (const chunk of streamText(
@@ -59,7 +63,14 @@ export function useTextController() {
         setGlobalGenerating(false);
       }
     },
-    [addAssistantDraft, appendTextToItem, addItem, model, provider],
+    [
+      addAssistantDraft,
+      appendTextToItem,
+      addItem,
+      model,
+      provider,
+      setGlobalGenerating,
+    ],
   );
 
   return { execute, isGenerating, cancel };

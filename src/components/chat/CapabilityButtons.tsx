@@ -1,10 +1,10 @@
-import React from 'react';
-import textIcon from '../../assets/icons/text.svg?url';
-import imageIcon from '../../assets/icons/image.svg?url';
-import videoIcon from '../../assets/icons/video.svg?url';
-import styles from './ChatInput.module.css';
+import React from "react";
+import textIcon from "../../assets/icons/text.svg?url";
+import imageIcon from "../../assets/icons/image.svg?url";
+import videoIcon from "../../assets/icons/video.svg?url";
+import styles from "./ChatInput.module.css";
 
-type Capability = 'text' | 'image' | 'video';
+type Capability = "text" | "image" | "video";
 
 type Props = {
   selected: Capability;
@@ -32,7 +32,7 @@ function CapabilityButton({
   return (
     <button
       type="button"
-      className={`${styles.capabilityBtn} ${active ? styles.capabilityBtnActive : ''}`}
+      className={`${styles.capabilityBtn} ${active ? styles.capabilityBtnActive : ""}`}
       onClick={onClick}
       title={title}
       aria-label={ariaLabel}
@@ -54,8 +54,8 @@ export default function CapabilityButtons({
     <div className={styles.leftActions}>
       {showText && (
         <CapabilityButton
-          active={selected === 'text'}
-          onClick={() => onSelect('text')}
+          active={selected === "text"}
+          onClick={() => onSelect("text")}
           title="Text"
           ariaLabel="Text capability"
         >
@@ -64,8 +64,8 @@ export default function CapabilityButtons({
       )}
       {showImage && (
         <CapabilityButton
-          active={selected === 'image'}
-          onClick={() => onSelect('image')}
+          active={selected === "image"}
+          onClick={() => onSelect("image")}
           title="Image"
           ariaLabel="Image capability"
         >
@@ -74,8 +74,8 @@ export default function CapabilityButtons({
       )}
       {showVideo && (
         <CapabilityButton
-          active={selected === 'video'}
-          onClick={() => onSelect('video')}
+          active={selected === "video"}
+          onClick={() => onSelect("video")}
           title="Video"
           ariaLabel="Video capability"
         >

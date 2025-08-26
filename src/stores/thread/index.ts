@@ -1,3 +1,3 @@
-export * from './store';
-export * from './selectors';
-export * from '../../domain/thread';
+export * from "./store";
+export * from "./selectors";
+export * from "../../domain/thread";

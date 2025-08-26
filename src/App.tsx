@@ -1,6 +1,11 @@
-import ResultSurface from './components/results/ResultSurface';
-import InputBar from './components/input/InputBar';
-import { useDragAndDrop, useModelSelection, useInputHandling, useSelections } from './hooks';
+import ResultSurface from "./components/results/ResultSurface";
+import InputBar from "./components/input/InputBar";
+import {
+  useDragAndDrop,
+  useModelSelection,
+  useInputHandling,
+  useSelections,
+} from "./hooks";
 
 function App() {
   // Custom hooks for all complex logic
@@ -32,13 +37,13 @@ function App() {
         onKeyPress={handleKeyPress}
         onSend={handleSend}
         onRefresh={handleRefresh}
-        selectedModel={selectedModelValue || ''}
+        selectedModel={selectedModelValue || ""}
         models={models}
         isLoadingModels={isLoadingModels}
         selectedCapability={selectedCapability}
         onSelectCapability={setSelectedCapability}
         providers={providers}
-        selectedProvider={providerFilter || ''}
+        selectedProvider={providerFilter || ""}
         onChangeProvider={(value) => {
           setProviderFilter(value);
           if (value !== null) {

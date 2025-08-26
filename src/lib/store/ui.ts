@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-export type DropdownId = 'provider' | 'model' | null;
+export type DropdownId = "provider" | "model" | null;
 
 interface UiState {
   openMenu: DropdownId;

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { fileToDataUrl } from '../utils/image';
-import type { CapabilityId } from '../lib/store/selections';
+import { useCallback, useEffect, useState } from "react";
+import { fileToDataUrl } from "../utils/image";
+import type { CapabilityId } from "../lib/store/selections";
 
 interface UseDragAndDropProps {
   onImageDrop?: (dataUrl: string) => void;
@@ -33,9 +33,9 @@ export function useDragAndDrop({
       e.stopPropagation();
 
       const file = e.dataTransfer?.files[0];
-      if (file && file.type.startsWith('image/')) {
+      if (file && file.type.startsWith("image/")) {
         // Auto-switch to image capability if callback provided
-        onCapabilityChange?.('image');
+        onCapabilityChange?.("image");
 
         // Convert to data URL using utility
         const dataUrl = await fileToDataUrl(file);
@@ -48,12 +48,12 @@ export function useDragAndDrop({
 
   useEffect(() => {
     // Add listeners to the entire document
-    document.addEventListener('dragover', handleDragOver);
-    document.addEventListener('drop', handleDrop);
+    document.addEventListener("dragover", handleDragOver);
+    document.addEventListener("drop", handleDrop);
 
     return () => {
-      document.removeEventListener('dragover', handleDragOver);
-      document.removeEventListener('drop', handleDrop);
+      document.removeEventListener("dragover", handleDragOver);
+      document.removeEventListener("drop", handleDrop);
     };
   }, [handleDragOver, handleDrop]);
 

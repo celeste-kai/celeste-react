@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useSelectionsStore } from '../lib/store/selections';
-import { useModels, useProviders, useCapabilities } from '../lib/queries/discovery';
-import { capabilityFilterMap, imageModeCapabilityMap } from '../lib/capability';
+import { useEffect } from "react";
+import { useSelectionsStore } from "../lib/store/selections";
+import { useModels, useProviders, useCapabilities } from "../lib/queries/discovery";
+import { capabilityFilterMap, imageModeCapabilityMap } from "../lib/capability";
 
 export function useModelSelection() {
   const selectedCapability = useSelectionsStore((s) => s.capability);
@@ -15,7 +15,7 @@ export function useModelSelection() {
 
   // Determine which capability to filter by based on mode
   const capabilityFilter =
-    selectedCapability === 'image' && imageMode === 'edit'
+    selectedCapability === "image" && imageMode === "edit"
       ? imageModeCapabilityMap[imageMode]
       : capabilityFilterMap[selectedCapability];
 
@@ -27,18 +27,25 @@ export function useModelSelection() {
   const { data: capabilities = [] } = useCapabilities();
 
   // Derived values
-  const showText = capabilities.some((c: any) => c.id === 'text_generation');
-  const showImage = capabilities.some((c: any) => c.id === 'image_generation');
-  const showVideo = capabilities.some((c: any) => c.id === 'video_generation');
+  const showText = capabilities.some((c: any) => c.id === "text_generation");
+  const showImage = capabilities.some((c: any) => c.id === "image_generation");
+  const showVideo = capabilities.some((c: any) => c.id === "video_generation");
 
-  const availableProviders = providers.filter((p) => models.some((m) => m.provider === p.id));
+  const availableProviders = providers.filter((p) =>
+    models.some((m) => m.provider === p.id),
+  );
 
   const displayedModels =
-    providerFilter === null ? models : models.filter((m) => m.provider === providerFilter);
+    providerFilter === null
+      ? models
+      : models.filter((m) => m.provider === providerFilter);
 
   // Auto-selection effects
   useEffect(() => {
-    if (selectedProvider && !availableProviders.some((p) => p.id === selectedProvider)) {
+    if (
+      selectedProvider &&
+      !availableProviders.some((p) => p.id === selectedProvider)
+    ) {
       setSelectedProvider(null);
     }
   }, [availableProviders, selectedProvider, setSelectedProvider]);
@@ -55,7 +62,7 @@ export function useModelSelection() {
       setSelectedModel(null);
       return;
     }
-    if (!displayedModels.some((m) => m.id === (selectedModelValue || ''))) {
+    if (!displayedModels.some((m) => m.id === (selectedModelValue || ""))) {
       // Use selectModelFromCatalog to set both model and provider
       useSelectionsStore.getState().selectModelFromCatalog(displayedModels[0]);
     }

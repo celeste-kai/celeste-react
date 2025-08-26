@@ -1,14 +1,14 @@
-import type { CapabilityId } from '../lib/store/selections';
+import type { CapabilityId } from "../lib/store/selections";
 
-export type Role = 'user' | 'assistant' | 'system';
+export type Role = "user" | "assistant" | "system";
 
 export type TextPart = {
-  kind: 'text';
+  kind: "text";
   content: string;
 };
 
 export type ImagePart = {
-  kind: 'image';
+  kind: "image";
   dataUrl?: string;
   path?: string;
   metadata?: Record<string, unknown>;
@@ -21,7 +21,7 @@ export type ImagePart = {
 };
 
 export type VideoPart = {
-  kind: 'video';
+  kind: "video";
   url?: string;
   path?: string;
   metadata?: Record<string, unknown>;
@@ -39,7 +39,7 @@ export interface ThreadItem {
   parts: ContentPart[];
 }
 
-export type ThreadItemInput = Omit<ThreadItem, 'id' | 'createdAt'> & {
+export type ThreadItemInput = Omit<ThreadItem, "id" | "createdAt"> & {
   id?: string;
   createdAt?: number;
 };

@@ -1,14 +1,20 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getHealth, listCapabilities, listProviders, listModels } from '../../services/discovery';
-import type { ModelFilters } from '../../types/api';
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import {
+  getHealth,
+  listCapabilities,
+  listProviders,
+  listModels,
+} from "../../services/discovery";
+import type { ModelFilters } from "../../types/api";
 
 // Query keys factory for better organization
 export const discoveryKeys = {
-  all: ['discovery'] as const,
-  health: () => [...discoveryKeys.all, 'health'] as const,
-  capabilities: () => [...discoveryKeys.all, 'capabilities'] as const,
-  providers: () => [...discoveryKeys.all, 'providers'] as const,
-  models: (filters?: ModelFilters) => [...discoveryKeys.all, 'models', filters] as const,
+  all: ["discovery"] as const,
+  health: () => [...discoveryKeys.all, "health"] as const,
+  capabilities: () => [...discoveryKeys.all, "capabilities"] as const,
+  providers: () => [...discoveryKeys.all, "providers"] as const,
+  models: (filters?: ModelFilters) =>
+    [...discoveryKeys.all, "models", filters] as const,
 };
 
 // Health check query

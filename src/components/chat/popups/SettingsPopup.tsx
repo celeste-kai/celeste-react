@@ -1,11 +1,11 @@
-import styles from './Popup.module.css';
+import styles from "./Popup.module.css";
+import Popup from "../../../common/components/Popup/Popup";
 
 type SettingsPopupProps = { onClose: () => void };
 
 function SettingsPopup({ onClose }: SettingsPopupProps) {
   return (
-    <div className={styles.popup}>
-      <h3 className={styles.title}>⚙️ Settings</h3>
+    <Popup title="⚙️ Settings" onClose={onClose}>
       <div className={styles.settingItem}>
         <label>Temperature: </label>
         <input
@@ -19,12 +19,15 @@ function SettingsPopup({ onClose }: SettingsPopupProps) {
       </div>
       <div className={styles.settingItem}>
         <label>Max Tokens: </label>
-        <input className={styles.input} type="number" min="100" max="4000" defaultValue="1000" />
+        <input
+          className={styles.input}
+          type="number"
+          min="100"
+          max="4000"
+          defaultValue="1000"
+        />
       </div>
-      <button className={styles.button} type="button" onClick={onClose}>
-        Close
-      </button>
-    </div>
+    </Popup>
   );
 }
 

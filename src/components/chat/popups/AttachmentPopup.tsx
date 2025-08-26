@@ -1,16 +1,13 @@
-import styles from './Popup.module.css';
+import styles from "./Popup.module.css";
+import Popup from "../../../common/components/Popup/Popup";
 
 type AttachmentPopupProps = { onClose: () => void };
 
 function AttachmentPopup({ onClose }: AttachmentPopupProps) {
   return (
-    <div className={styles.popup}>
-      <h3 className={styles.title}>📎 Attachments</h3>
+    <Popup title="📎 Attachments" onClose={onClose}>
       <input className={styles.input} type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" />
-      <button className={styles.button} type="button" onClick={onClose}>
-        Close
-      </button>
-    </div>
+    </Popup>
   );
 }
 
