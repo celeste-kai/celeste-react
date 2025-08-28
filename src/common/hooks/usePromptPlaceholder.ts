@@ -24,5 +24,3 @@ export function usePromptPlaceholder({
   }
   return PLACEHOLDER_DEFAULT;
 }
-
-export default usePromptPlaceholder;

@@ -7,7 +7,12 @@ interface ImagePartProps extends ImagePartType {
   role?: Role;
 }
 
-export default function ImagePart({ dataUrl, path, originalImage, role = "assistant" }: ImagePartProps) {
+export default function ImagePart({
+  dataUrl,
+  path,
+  originalImage,
+  role = "assistant",
+}: ImagePartProps) {
   // If this is an edited image with original, show before/after slider
   if (dataUrl && originalImage?.dataUrl) {
     return (

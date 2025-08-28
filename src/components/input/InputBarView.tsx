@@ -73,14 +73,14 @@ export default function InputBarView({
     const textarea = textareaRef.current;
     if (textarea) {
       // Reset height to recalculate
-      textarea.style.height = 'auto';
+      textarea.style.height = "auto";
 
       // Calculate new height based on scroll height
       const newHeight = Math.min(textarea.scrollHeight, 120); // Max height of ~6 lines
       textarea.style.height = `${newHeight}px`;
 
       // Add overflow when content exceeds max height
-      textarea.style.overflowY = textarea.scrollHeight > 120 ? 'auto' : 'hidden';
+      textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
     }
   }, [inputValue]);
 

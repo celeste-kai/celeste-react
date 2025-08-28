@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { generateId } from "../../lib/id";
+import { generateId } from "../../utils";
 import type { CapabilityId } from "../../lib/store/selections";
 import type {
   ContentPart,

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useUiStore, type DropdownId } from "../../lib/store/ui";
-import { UI_MIN_SPACE_BELOW } from "../constants/ui";
+
+const UI_MIN_SPACE_BELOW = 200;
 
 export function useDropdownMenu(
   menuId: Exclude<DropdownId, null>,
@@ -58,11 +59,11 @@ export function useDropdownMenu(
     };
 
     // Add event listener to document
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     // Cleanup
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open, closeCallback]);
 

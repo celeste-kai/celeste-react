@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import InputBarView from "./InputBarView";
-import usePromptPlaceholder from "../../common/hooks/usePromptPlaceholder";
+import { usePromptPlaceholder } from "../../common/hooks/usePromptPlaceholder";
 import { useSelectionsStore } from "../../lib/store/selections";
 import type { ModelOut, ProviderOut } from "../../types/api";
 import type { ImageMode } from "../../lib/capability";
@@ -10,7 +10,6 @@ type Props = {
   onInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyPress: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onSend: (prompt: string) => void;
-  onRefresh: () => void;
   selectedModel: string;
   models?: ModelOut[];
   isLoadingModels?: boolean;
@@ -40,8 +39,6 @@ export default function InputBar({
   onInputChange,
   onKeyPress,
   onSend,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onRefresh,
   selectedModel,
   models = [],
   isLoadingModels = false,

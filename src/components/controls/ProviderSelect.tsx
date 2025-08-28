@@ -16,7 +16,8 @@ export function ProviderSelect({
   onChange: (next: string | null) => void;
   compact?: boolean;
 }) {
-  const { open, toggle, buttonRef, containerRef, flipUp, close } = useDropdownMenu("provider");
+  const { open, toggle, buttonRef, containerRef, flipUp, close } =
+    useDropdownMenu("provider");
 
   const current = useMemo(
     () => providers.find((p) => p.id === value),
