@@ -47,16 +47,11 @@ export function useInputHandling({
     [submit],
   );
 
-  const handleRefresh = useCallback(() => {
-    setInputValue("");
-  }, []);
-
   return {
     inputValue,
     setInputValue,
     handleInputChange,
     handleKeyPress,
     handleSend,
-    handleRefresh,
   };
 }

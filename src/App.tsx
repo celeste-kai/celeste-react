@@ -7,6 +7,8 @@ import {
   useSelections,
 } from "./hooks";
 import useImageUpload from "./common/hooks/useImageUpload";
+import { AuthProvider } from "./contexts/AuthContext";
+import AuthGuard from "./components/auth/AuthGuard";
 
 function App() {
   // Custom hooks for all complex logic
@@ -34,7 +36,7 @@ function App() {
     onHandled: clearDraggedImage,
   });
 
-  const { inputValue, handleInputChange, handleKeyPress, handleSend, handleRefresh } =
+  const { inputValue, handleInputChange, handleKeyPress, handleSend } =
     useInputHandling({
       selectedCapability,
       imageMode,
@@ -43,42 +45,45 @@ function App() {
     });
 
   return (
-    <div className="app">
-      <ResultSurface />
-      <InputBar
-        inputValue={inputValue}
-        onInputChange={handleInputChange}
-        onKeyPress={handleKeyPress}
-        onSend={handleSend}
-        onRefresh={handleRefresh}
-        selectedModel={selectedModelValue || ""}
-        models={models}
-        isLoadingModels={isLoadingModels}
-        selectedCapability={selectedCapability}
-        onSelectCapability={setSelectedCapability}
-        providers={providers}
-        selectedProvider={providerFilter || ""}
-        onChangeProvider={(value) => {
-          setProviderFilter(value);
-          if (value !== null) {
-            setSelectedProvider(value);
-          }
-        }}
-        showText={showText}
-        showImage={showImage}
-        showVideo={showVideo}
-        imageMode={imageMode}
-        onImageModeChange={setImageMode}
-        uploadedImage={image.uploadedImage}
-        onClearImage={image.clearImage}
-        fileInputRef={image.fileInputRef}
-        onFileSelected={image.selectFile}
-        isDragging={image.isDragging}
-        onDrop={image.onDrop}
-        onDragOver={image.onDragOver}
-        onDragLeave={image.onDragLeave}
-      />
-    </div>
+    <AuthProvider>
+      <AuthGuard>
+        <div className="app">
+          <ResultSurface />
+          <InputBar
+            inputValue={inputValue}
+            onInputChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            onSend={handleSend}
+            selectedModel={selectedModelValue || ""}
+            models={models}
+            isLoadingModels={isLoadingModels}
+            selectedCapability={selectedCapability}
+            onSelectCapability={setSelectedCapability}
+            providers={providers}
+            selectedProvider={providerFilter || ""}
+            onChangeProvider={(value) => {
+              setProviderFilter(value);
+              if (value !== null) {
+                setSelectedProvider(value);
+              }
+            }}
+            showText={showText}
+            showImage={showImage}
+            showVideo={showVideo}
+            imageMode={imageMode}
+            onImageModeChange={setImageMode}
+            uploadedImage={image.uploadedImage}
+            onClearImage={image.clearImage}
+            fileInputRef={image.fileInputRef}
+            onFileSelected={image.selectFile}
+            isDragging={image.isDragging}
+            onDrop={image.onDrop}
+            onDragOver={image.onDragOver}
+            onDragLeave={image.onDragLeave}
+          />
+        </div>
+      </AuthGuard>
+    </AuthProvider>
   );
 }
 
