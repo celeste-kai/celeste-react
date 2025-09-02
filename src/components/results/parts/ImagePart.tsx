@@ -1,4 +1,3 @@
-import React from "react";
 import { BeforeAfterSlider } from "../../image/BeforeAfterSlider";
 import type { ImagePart as ImagePartType, Role } from "../../../domain/thread";
 import styles from "./ImagePart.module.css";

@@ -5,6 +5,13 @@
   justify-content: center;
   height: calc(100vh - 120px);
   text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 120px; /* Account for input bar */
+  z-index: 0; /* Behind sidebar and input */
+  pointer-events: none; /* Don't interfere with sidebar interactions */
 }
 
 .text {
@@ -15,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  pointer-events: auto; /* Re-enable pointer events for the text itself */
 }
 
 .icon {

@@ -1,4 +1,3 @@
-import React from "react";
 import Greeting from "../chat/Greeting";
 import { useThreadStore, useExecStore, useSelectionsStore } from "../../common/stores";
 import ThreadItemView from "./ThreadItemView";
@@ -19,7 +18,6 @@ export default function ResultSurface() {
         items.map((it) => <ThreadItemView key={it.id} item={it} />)
       )}
       {showLoader && <AssistantSkeleton />}
-      <div className={styles.bottomSpacer} />
     </div>
   );
 }

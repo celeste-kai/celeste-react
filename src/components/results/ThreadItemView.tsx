@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./ThreadItemView.module.css";
 import TextPart from "./parts/TextPart";
 import ImagePart from "./parts/ImagePart";

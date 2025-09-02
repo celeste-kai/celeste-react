@@ -19,7 +19,8 @@ export default function AuthGuard({ children, requireAuth = true }: AuthGuardPro
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "100vh",
+          width: "100%",
+          height: "100%",
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         }}
       >

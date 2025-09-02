@@ -1,0 +1,119 @@
+/* Base Input Styles */
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(255, 140, 107, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-bg);
+  }
+}
+
+/* Search Input */
+.search {
+  padding-left: var(--space-5);
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239a9a9a'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: var(--space-2) center;
+}
+
+/* Textarea */
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+/* Input Group */
+.inputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Input with Icon */
+.withIcon {
+  padding-right: var(--space-5);
+}
+
+.iconContainer {
+  position: absolute;
+  right: var(--space-2);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+
+.iconClickable {
+  pointer-events: auto;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+/* Error State */
+.error {
+  border-color: #dc2626;
+
+  &:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+}
+
+/* Size Variations */
+.small {
+  padding: var(--space-1) var(--space-2);
+  font-size: 12px;
+}
+
+.large {
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--font-size-md);
+}
+
+/* Field Container */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.helperText {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.errorText {
+  font-size: 12px;
+  color: #dc2626;
+}

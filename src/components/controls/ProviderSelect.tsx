@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import useDropdownMenu from "../../common/hooks/useDropdownMenu";
+import { useMemo } from "react";
+import { useDropdownMenu } from "../../common/hooks/useDropdownMenu";
 import ProviderIcon from "../icons/ProviderIcon";
 import { ALL_PROVIDERS_LABEL, CHEVRON, STAR } from "../../common/constants/strings";
 import styles from "./ProviderSelect.module.css";

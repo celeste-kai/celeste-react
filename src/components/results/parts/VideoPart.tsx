@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function VideoPart({ url, path }: { url?: string; path?: string }) {
   const src = url || path;
 

@@ -1,0 +1,253 @@
+/* Design Tokens - Centralized Design Values */
+:root {
+  /* ============================================
+     COLOR SYSTEM
+  ============================================ */
+
+  /* Base Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Gray Scale */
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #e5e5e5;
+  --color-gray-300: #d4d4d4;
+  --color-gray-400: #a3a3a3;
+  --color-gray-500: #737373;
+  --color-gray-600: #525252;
+  --color-gray-700: #404040;
+  --color-gray-800: #262626;
+  --color-gray-900: #171717;
+
+  /* Primary Theme (Dark) */
+  --color-bg: #2b2b2b;
+  --color-surface: #3a3a3a;
+  --color-border: #4a4a4a;
+  --color-text: #e0e0e0;
+  --color-text-muted: #9a9a9a;
+
+  /* Accent Colors */
+  --color-accent: #ff8c6b;
+  --color-accent-2: #ff6b4a;
+  --color-accent-light: #ffb399;
+  --color-accent-dark: #e55a39;
+
+  /* Semantic Colors */
+  --color-success: #22c55e;
+  --color-success-light: #86efac;
+  --color-success-dark: #16a34a;
+
+  --color-warning: #f59e0b;
+  --color-warning-light: #fcd34d;
+  --color-warning-dark: #d97706;
+
+  --color-error: #dc2626;
+  --color-error-light: #f87171;
+  --color-error-dark: #b91c1c;
+
+  --color-info: #3b82f6;
+  --color-info-light: #93c5fd;
+  --color-info-dark: #2563eb;
+
+  /* Special Colors */
+  --color-link: #4a9eff;
+  --color-star: #ffd479;
+
+  /* ============================================
+     TYPOGRAPHY SYSTEM
+  ============================================ */
+
+  /* Font Families */
+  --font-family-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono:
+    "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Consolas", monospace;
+
+  /* Font Sizes */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 48px;
+  --font-size-6xl: 64px;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Font Weights */
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* ============================================
+     SPACING SYSTEM
+  ============================================ */
+
+  /* Base unit: 4px */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ============================================
+     BORDER RADIUS SYSTEM
+  ============================================ */
+
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
+  /* ============================================
+     SHADOW SYSTEM
+  ============================================ */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+  /* Dark theme shadows (current) */
+  --shadow-elev-1: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-elev-2: 0 4px 20px rgba(0, 0, 0, 0.5);
+
+  /* ============================================
+     Z-INDEX SYSTEM
+  ============================================ */
+
+  --z-index-hide: -1;
+  --z-index-auto: auto;
+  --z-index-base: 0;
+  --z-index-docked: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1100;
+  --z-index-banner: 1200;
+  --z-index-overlay: 1300;
+  --z-index-modal: 1400;
+  --z-index-popover: 1500;
+  --z-index-skipLink: 1600;
+  --z-index-toast: 1700;
+  --z-index-tooltip: 1800;
+
+  /* ============================================
+     TRANSITION SYSTEM
+  ============================================ */
+
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* ============================================
+     BREAKPOINT SYSTEM
+  ============================================ */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ============================================
+     COMPONENT-SPECIFIC TOKENS
+  ============================================ */
+
+  /* Button */
+  --button-height-sm: 32px;
+  --button-height-md: 40px;
+  --button-height-lg: 48px;
+
+  /* Input */
+  --input-height-sm: 32px;
+  --input-height-md: 40px;
+  --input-height-lg: 48px;
+
+  /* Avatar */
+  --avatar-size-xs: 24px;
+  --avatar-size-sm: 32px;
+  --avatar-size-md: 40px;
+  --avatar-size-lg: 48px;
+  --avatar-size-xl: 64px;
+  --avatar-size-2xl: 96px;
+
+  /* Sidebar */
+  --sidebar-width-collapsed: 60px;
+  --sidebar-width-expanded: 280px;
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDES
+============================================ */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #f9fafb;
+    --color-border: #e5e7eb;
+    --color-text: #111827;
+    --color-text-muted: #6b7280;
+
+    /* Adjust shadows for light theme */
+    --shadow-elev-1: var(--shadow-sm);
+    --shadow-elev-2: var(--shadow-md);
+  }
+}
+
+/* ============================================
+   THEME UTILITIES
+============================================ */
+
+/* Force light theme */
+.theme-light {
+  --color-bg: #ffffff;
+  --color-surface: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --shadow-elev-1: var(--shadow-sm);
+  --shadow-elev-2: var(--shadow-md);
+}
+
+/* Force dark theme */
+.theme-dark {
+  --color-bg: #2b2b2b;
+  --color-surface: #3a3a3a;
+  --color-border: #4a4a4a;
+  --color-text: #e0e0e0;
+  --color-text-muted: #9a9a9a;
+  --shadow-elev-1: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-elev-2: 0 4px 20px rgba(0, 0, 0, 0.5);
+}

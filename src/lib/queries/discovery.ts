@@ -63,27 +63,4 @@ export function useModels(filters?: ModelFilters) {
   });
 }
 
-// Combined discovery data hook (fetches all discovery data at once)
-export function useDiscoveryData() {
-  const healthQuery = useHealth();
-  const capabilitiesQuery = useCapabilities();
-  const providersQuery = useProviders();
-  const modelsQuery = useModels();
-
-  return {
-    health: healthQuery,
-    capabilities: capabilitiesQuery,
-    providers: providersQuery,
-    models: modelsQuery,
-    isLoading:
-      healthQuery.isLoading ||
-      capabilitiesQuery.isLoading ||
-      providersQuery.isLoading ||
-      modelsQuery.isLoading,
-    isError:
-      healthQuery.isError ||
-      capabilitiesQuery.isError ||
-      providersQuery.isError ||
-      modelsQuery.isError,
-  };
-}
+// useDiscoveryData hook removed as it was unused

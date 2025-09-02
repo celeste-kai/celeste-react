@@ -10,9 +10,22 @@ import type {
   ThreadItemInput,
   VideoPart,
 } from "../../domain/thread";
+import { conversationsService } from "../../services/conversations";
+import { conversationRealtimeService } from "../../services/conversationRealtimeService";
+import { supabase } from "../../lib/supabase";
+import {
+  transformThreadItemsToMessages,
+  transformMessagesToThreadItems,
+} from "../../utils/conversationTransforms";
 
 export interface ThreadState {
   items: ThreadItem[];
+  currentConversationId: string | null;
+  isLoading: boolean;
+  isSaving: boolean;
+  error: string | null;
+
+  // Existing methods
   addItem: (item: ThreadItemInput) => void;
   addText: (
     content: string,
@@ -33,10 +46,33 @@ export interface ThreadState {
   }) => string;
   appendTextToItem: (id: string, delta: string) => void;
   clear: () => void;
+
+  // New persistence methods
+  createNewConversation: (title?: string) => Promise<string>;
+  loadConversation: (conversationId: string) => Promise<void>;
+  loadMostRecentConversation: () => Promise<void>;
+  saveCurrentConversation: () => Promise<void>;
+  updateConversationTitle: (title: string) => Promise<void>;
+  deleteCurrentConversation: () => Promise<void>;
+
+  // Real-time methods
+  subscribeToCurrentConversation: () => () => void;
+  unsubscribeFromRealtime: () => void;
+
+  // Utility methods
+  setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void;
+  setSaving: (saving: boolean) => void;
 }
 
-export const useThreadStore = create<ThreadState>((set) => ({
+let realtimeUnsubscribe: (() => void) | null = null;
+
+export const useThreadStore = create<ThreadState>((set, get) => ({
   items: [],
+  currentConversationId: null,
+  isLoading: false,
+  isSaving: false,
+  error: null,
   addItem: (item) => {
     const now = Date.now();
     const finalItem: ThreadItem = {
@@ -134,5 +170,290 @@ export const useThreadStore = create<ThreadState>((set) => ({
       }),
     }));
   },
-  clear: () => set({ items: [] }),
+  clear: () => {
+    // Unsubscribe from real-time updates when clearing
+    if (realtimeUnsubscribe) {
+      realtimeUnsubscribe();
+      realtimeUnsubscribe = null;
+    }
+    set({
+      items: [],
+      currentConversationId: null,
+      error: null,
+    });
+  },
+
+  // New persistence methods
+  createNewConversation: async (title?: string) => {
+    const state = get();
+    try {
+      set({ isLoading: true, error: null });
+
+      // Save current conversation if it exists and has items
+      if (state.currentConversationId && state.items.length > 0) {
+        try {
+          await get().saveCurrentConversation();
+        } catch {
+          // Warning: Failed to save current conversation before creating new one
+        }
+      }
+
+      // Create conversation with provided title or default
+      const conversationTitle = title || "New Conversation";
+      const conversation = await conversationsService.createConversation({
+        title: conversationTitle,
+      });
+
+      // Clear current items and set new conversation as current
+      set({
+        currentConversationId: conversation.id,
+        items: [], // Clear items for fresh start
+      });
+
+      return conversation.id;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create conversation";
+      set({ error: errorMessage });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  loadConversation: async (conversationId: string) => {
+    try {
+      set({ isLoading: true, error: null });
+
+      // Unsubscribe from previous conversation
+      if (realtimeUnsubscribe) {
+        realtimeUnsubscribe();
+        realtimeUnsubscribe = null;
+      }
+
+      // Load messages
+      const messages =
+        await conversationsService.getConversationMessages(conversationId);
+      const threadItems = transformMessagesToThreadItems(messages);
+
+      set({
+        items: threadItems,
+        currentConversationId: conversationId,
+      });
+
+      // Subscribe to real-time updates
+      get().subscribeToCurrentConversation();
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to load conversation";
+      set({ error: errorMessage });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  loadMostRecentConversation: async () => {
+    try {
+      set({ isLoading: true, error: null });
+
+      // Get the most recent conversation
+      const conversations = await conversationsService.listConversations({
+        limit: 1,
+        order_by: "updated_at",
+        order_direction: "desc",
+      });
+
+      if (conversations.length > 0) {
+        const recentConversation = conversations[0];
+        await get().loadConversation(recentConversation.id);
+      }
+    } catch {
+      // Warning: Failed to load most recent conversation
+      // Don't throw error for initialization - just log warning
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  saveCurrentConversation: async () => {
+    const state = get();
+
+    // Don't save empty conversations
+    if (!state.items || state.items.length === 0) {
+      return;
+    }
+
+    // Auto-create conversation if none exists (but only when we have content)
+    let conversationId = state.currentConversationId;
+    if (!conversationId) {
+      try {
+        const conversation = await conversationsService.createConversation({
+          title: "New Conversation",
+        });
+        conversationId = conversation.id;
+        // Update the current conversation ID without clearing items
+        set({ currentConversationId: conversation.id });
+      } catch {
+        // Error: Failed to create conversation during save
+        throw new Error("Failed to create conversation for saving");
+      }
+    }
+
+    try {
+      set({ isSaving: true, error: null });
+
+      // Get current user from Supabase auth
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const messageRequests = transformThreadItemsToMessages(
+        state.items,
+        conversationId,
+        user.id,
+      );
+
+      // Clear existing messages and add new ones
+      // This is a simple approach - in production you might want to do incremental updates
+      const existingMessages =
+        await conversationsService.getConversationMessages(conversationId);
+
+      // Delete existing messages
+      for (const message of existingMessages) {
+        await conversationsService.deleteMessage(message.id);
+      }
+
+      // Add new messages
+      for (const messageRequest of messageRequests) {
+        await conversationsService.createMessage(messageRequest);
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to save conversation";
+      set({ error: errorMessage });
+      throw error;
+    } finally {
+      set({ isSaving: false });
+    }
+  },
+
+  updateConversationTitle: async (title: string) => {
+    const state = get();
+    if (!state.currentConversationId) {
+      throw new Error("No current conversation to update");
+    }
+
+    try {
+      set({ error: null });
+      await conversationsService.updateConversation(state.currentConversationId, {
+        title,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update conversation title";
+      set({ error: errorMessage });
+      throw error;
+    }
+  },
+
+  deleteCurrentConversation: async () => {
+    const state = get();
+    if (!state.currentConversationId) {
+      throw new Error("No current conversation to delete");
+    }
+
+    try {
+      set({ isLoading: true, error: null });
+
+      // Unsubscribe from real-time updates
+      if (realtimeUnsubscribe) {
+        realtimeUnsubscribe();
+        realtimeUnsubscribe = null;
+      }
+
+      await conversationsService.deleteConversation(state.currentConversationId);
+
+      // Clear the current conversation
+      set({
+        items: [],
+        currentConversationId: null,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete conversation";
+      set({ error: errorMessage });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  // Real-time methods
+  subscribeToCurrentConversation: () => {
+    const state = get();
+    if (!state.currentConversationId) {
+      return () => {};
+    }
+
+    // Unsubscribe from previous subscription
+    if (realtimeUnsubscribe) {
+      realtimeUnsubscribe();
+    }
+
+    realtimeUnsubscribe = conversationRealtimeService.subscribeToConversation(
+      state.currentConversationId,
+      {
+        onMessageChange: (event) => {
+          if (event.eventType === "INSERT" && event.new) {
+            // Add new message to thread
+            const threadItem = transformMessagesToThreadItems([event.new])[0];
+            if (threadItem) {
+              set((state) => ({
+                items: [...state.items, threadItem],
+              }));
+            }
+          } else if (event.eventType === "UPDATE" && event.new) {
+            // Update existing message
+            const threadItem = transformMessagesToThreadItems([event.new])[0];
+            if (threadItem) {
+              set((state) => ({
+                items: state.items.map((item) =>
+                  item.id === threadItem.id ? threadItem : item,
+                ),
+              }));
+            }
+          } else if (event.eventType === "DELETE" && event.old) {
+            // Remove message from thread
+            const threadItem = transformMessagesToThreadItems([event.old])[0];
+            if (threadItem) {
+              set((state) => ({
+                items: state.items.filter((item) => item.id !== threadItem.id),
+              }));
+            }
+          }
+        },
+        onError: (error) => {
+          set({ error: `Real-time error: ${error.message}` });
+        },
+      },
+    );
+
+    return realtimeUnsubscribe;
+  },
+
+  unsubscribeFromRealtime: () => {
+    if (realtimeUnsubscribe) {
+      realtimeUnsubscribe();
+      realtimeUnsubscribe = null;
+    }
+  },
+
+  // Utility methods
+  setError: (error: string | null) => set({ error }),
+  setLoading: (loading: boolean) => set({ isLoading: loading }),
+  setSaving: (saving: boolean) => set({ isSaving: saving }),
 }));
