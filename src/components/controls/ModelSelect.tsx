@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import useDropdownMenu from "../../common/hooks/useDropdownMenu";
+import { useMemo } from "react";
+import { useDropdownMenu } from "../../common/hooks/useDropdownMenu";
 import styles from "./ProviderSelect.module.css";
 import type { ModelOut } from "../../types/api";
 import {

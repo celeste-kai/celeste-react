@@ -35,7 +35,7 @@ export function useVideoController() {
       setIsGenerating(true);
       setGlobalGenerating(true);
       try {
-        const res: any = await generateVideo({
+        const res = await generateVideo({
           provider,
           model,
           prompt: trimmedPrompt,
@@ -43,7 +43,7 @@ export function useVideoController() {
 
         const videos = Array.isArray(res?.videos) ? res.videos : [];
 
-        const parts = videos.map((v: any) => {
+        const parts = videos.map((v) => {
           const processedUrl = v?.url?.startsWith("/")
             ? `${import.meta.env.VITE_API_BASE_URL}${v.url}`
             : v?.url;

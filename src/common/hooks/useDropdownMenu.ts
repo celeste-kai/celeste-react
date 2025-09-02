@@ -80,5 +80,3 @@ export function useDropdownMenu(
 
   return { open, toggle, close, buttonRef, containerRef, flipUp } as const;
 }
-
-export default useDropdownMenu;

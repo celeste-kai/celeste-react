@@ -37,7 +37,7 @@ export function useImageController() {
       setGlobalGenerating(true);
       try {
         const res = await generateImages({ provider, model, prompt: trimmedPrompt });
-        const images = (res?.images || []).map((img: any) => ({
+        const images = (res?.images || []).map((img) => ({
           kind: "image" as const,
           dataUrl: safeApiDataToDataUrl(img?.data),
           path: img?.path ?? undefined,

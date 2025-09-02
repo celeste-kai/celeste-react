@@ -1,4 +1,3 @@
-import React from "react";
 import itemStyles from "../../../components/results/ThreadItemView.module.css";
 
 export function AssistantSkeleton({ spinning = true }: { spinning?: boolean }) {

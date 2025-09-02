@@ -1,0 +1,219 @@
+.sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 60px; /* Collapsed width - just enough for + button */
+  background-color: var(--color-background);
+  border-right: 1px solid var(--color-border);
+  z-index: 5;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.sidebar:hover {
+  width: 280px; /* Expanded width on hover */
+}
+
+.topSection {
+  padding: 6rem 1rem 1rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  transition: padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar:not(:hover) .topSection {
+  padding: 6rem 0.5rem 1rem 0.5rem; /* Reduced padding for better centering in 60px width */
+}
+
+.newConversationButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  background: none;
+  color: white;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar:not(:hover) .newConversationButton {
+  justify-content: center;
+}
+
+.iconContainer {
+  width: 32px;
+  height: 32px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.iconContainer:hover {
+  background-color: var(--color-accent-2);
+}
+
+.buttonText {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 0.25rem;
+}
+
+.sidebar:not(:hover) .buttonText {
+  opacity: 0;
+  transform: translateX(-10px);
+  width: 0;
+  margin-left: 0;
+}
+
+.newConversationButton:hover:not(:disabled) .iconContainer {
+  background-color: var(--color-accent-2);
+}
+
+.newConversationButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveIndicator {
+  display: flex;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.sidebar:not(:hover) .saveIndicator {
+  display: none;
+}
+
+.conversationsSection {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+}
+
+.sidebar:not(:hover) .conversationsSection {
+  opacity: 0;
+  transform: translateX(-15px);
+  pointer-events: none;
+}
+
+.conversations {
+  flex: 1;
+}
+
+.loginPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loginPrompt h2 {
+  color: var(--color-text-primary);
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.loginPrompt p {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.signInButton {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.signInButton:hover {
+  background-color: var(--color-accent-2);
+}
+
+.saving {
+  color: var(--color-warning);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.saved {
+  color: var(--color-success);
+}
+
+.spinner {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid transparent;
+  border-top: 1px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  padding: 0.75rem 1rem;
+  background-color: var(--color-error-background);
+  color: var(--color-error-text);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Map to Celeste design system */
+.sidebar {
+  --color-background: var(--color-surface);
+  --color-text-primary: var(--color-text);
+  --color-text-secondary: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-warning: #fbbf24;
+  --color-success: #34d399;
+  --color-error-background: rgba(239, 68, 68, 0.1);
+  --color-error-text: #fca5a5;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+  }
+}

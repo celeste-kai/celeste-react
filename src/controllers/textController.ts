@@ -11,6 +11,7 @@ export function useTextController() {
   const addItem = useThreadStore((s) => s.addItem);
   const addAssistantDraft = useThreadStore((s) => s.addAssistantDraft);
   const appendTextToItem = useThreadStore((s) => s.appendTextToItem);
+  const saveCurrentConversation = useThreadStore((s) => s.saveCurrentConversation);
   const [isGenerating, setIsGenerating] = useState(false);
   const setGlobalGenerating = useExecStore((s) => s.setIsGenerating);
   const abortRef = useRef<AbortController | null>(null);
@@ -29,6 +30,8 @@ export function useTextController() {
       if (!isValid) {
         return;
       }
+
+      // Note: Conversation will be created during save if needed
 
       addItem({
         role: "user",
@@ -62,6 +65,13 @@ export function useTextController() {
         setIsGenerating(false);
         setGlobalGenerating(false);
       }
+
+      // Save conversation immediately after completion
+      try {
+        await saveCurrentConversation();
+      } catch {
+        // Warning: Failed to save conversation
+      }
     },
     [
       addAssistantDraft,
@@ -70,6 +80,7 @@ export function useTextController() {
       model,
       provider,
       setGlobalGenerating,
+      saveCurrentConversation,
     ],
   );
 
