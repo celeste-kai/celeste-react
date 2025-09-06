@@ -54,14 +54,18 @@ export default function InputBar() {
     }
   }, [uploadedImage, selectedCapability, setImageMode]);
 
-  const placeholder =
-    selectedCapability === "image" && uploadedImage
-      ? "Describe how you want to edit this image..."
-      : selectedCapability === "video" && uploadedImage
-        ? "Describe the video you want to create from this image..."
-        : selectedCapability === "audio"
-          ? "Enter text to convert to speech..."
-          : "Type a message...";
+  const placeholder = (() => {
+    if (selectedCapability === "image" && uploadedImage) {
+      return "Describe how you want to edit this image...";
+    }
+    if (selectedCapability === "video" && uploadedImage) {
+      return "Describe the video you want to create from this image...";
+    }
+    if (selectedCapability === "audio") {
+      return "Enter text to convert to speech...";
+    }
+    return "Type a message...";
+  })();
 
   // Auto-resize textarea based on content
   useEffect(() => {

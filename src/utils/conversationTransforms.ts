@@ -68,9 +68,11 @@ export function generateConversationTitle(threadItems: ThreadItem[]): string {
     return content.length > 50 ? content.substring(0, 47) + "..." : content;
   }
   const capability = firstUserMessage.capability;
-  return capability === "image"
-    ? "Image Generation"
-    : capability === "video"
-      ? "Video Generation"
-      : "New Conversation";
+  if (capability === "image") {
+    return "Image Generation";
+  }
+  if (capability === "video") {
+    return "Video Generation";
+  }
+  return "New Conversation";
 }

@@ -46,7 +46,11 @@ export default function AuthScreen() {
         />
 
         <button className={styles.primaryButton} type="submit" disabled={loading}>
-          {loading ? "..." : isSignUp ? "Sign Up" : "Sign In"}
+          {(() => {
+            if (loading) return "...";
+            if (isSignUp) return "Sign Up";
+            return "Sign In";
+          })()}
         </button>
 
         <button
