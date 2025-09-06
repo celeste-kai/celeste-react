@@ -39,7 +39,7 @@ export class ConversationsSearchService {
     const allResults: DatabaseConversation[] = [];
 
     // Add title matches
-    (titleResults || []).forEach((conv) => {
+    (titleResults || []).forEach((conv: any) => {
       if (!conversationIds.has(conv.id)) {
         conversationIds.add(conv.id);
         allResults.push(conv);
@@ -168,7 +168,7 @@ export class ConversationsSearchService {
 
     // If we need to filter by capability or provider, we need to check messages
     if (capability || provider) {
-      const conversationIds = filteredConversations.map((c) => c.id);
+      const conversationIds = filteredConversations.map((c: any) => c.id);
 
       if (conversationIds.length > 0) {
         let messageQuery = supabase
@@ -190,10 +190,10 @@ export class ConversationsSearchService {
         }
 
         const matchingConversationIds = new Set(
-          (matchingMessages || []).map((m) => m.conversation_id),
+          (matchingMessages || []).map((m: any) => m.conversation_id),
         );
 
-        filteredConversations = filteredConversations.filter((c) =>
+        filteredConversations = filteredConversations.filter((c: any) =>
           matchingConversationIds.has(c.id),
         );
       }

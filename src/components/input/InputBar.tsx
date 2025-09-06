@@ -26,7 +26,7 @@ type Props = {
   // Image upload props passed from App
   uploadedImage: string;
   onClearImage: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  fileInputRef: React.RefObject<HTMLInputElement>;
   onFileSelected: (file: File) => void;
   isDragging: boolean;
   onDrop: (e: React.DragEvent) => void;

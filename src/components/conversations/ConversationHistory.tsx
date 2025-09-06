@@ -153,7 +153,7 @@ export function ConversationHistory({
           />
         )}
 
-        {displayedConversations.map((conversation) => (
+        {displayedConversations.map((conversation: Conversation) => (
           <ConversationItem
             key={conversation.id}
             conversation={conversation}

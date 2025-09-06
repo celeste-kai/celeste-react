@@ -42,7 +42,7 @@ export class ConversationRealtimeService {
           table: "conversations",
           filter: `id=eq.${conversationId}`,
         },
-        (payload) => {
+        (payload: any) => {
           try {
             if (callbacks.onConversationChange) {
               const event: ConversationRealtimeEvent = {
@@ -71,7 +71,7 @@ export class ConversationRealtimeService {
           table: "conversation_messages",
           filter: `conversation_id=eq.${conversationId}`,
         },
-        (payload) => {
+        (payload: any) => {
           try {
             if (callbacks.onMessageChange) {
               const event: MessageRealtimeEvent = {
@@ -118,7 +118,7 @@ export class ConversationRealtimeService {
           schema: "public",
           table: "conversations",
         },
-        (payload) => {
+        (payload: any) => {
           try {
             if (callbacks.onConversationChange) {
               const event: ConversationRealtimeEvent = {

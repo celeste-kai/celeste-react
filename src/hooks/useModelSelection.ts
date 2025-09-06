@@ -27,24 +27,24 @@ export function useModelSelection() {
   const { data: capabilities = [] } = useCapabilities();
 
   // Derived values
-  const showText = capabilities.some((c: any) => c.id === "text_generation");
-  const showImage = capabilities.some((c: any) => c.id === "image_generation");
-  const showVideo = capabilities.some((c: any) => c.id === "video_generation");
+  const showText = capabilities.some((c: { id: string }) => c.id === "text_generation");
+  const showImage = capabilities.some((c: { id: string }) => c.id === "image_generation");
+  const showVideo = capabilities.some((c: { id: string }) => c.id === "video_generation");
 
-  const availableProviders = providers.filter((p) =>
-    models.some((m) => m.provider === p.id),
+  const availableProviders = providers.filter((p: { id: string }) =>
+    models.some((m: { provider: string }) => m.provider === p.id),
   );
 
   const displayedModels =
     providerFilter === null
       ? models
-      : models.filter((m) => m.provider === providerFilter);
+      : models.filter((m: { provider: string }) => m.provider === providerFilter);
 
   // Auto-selection effects
   useEffect(() => {
     if (
       selectedProvider &&
-      !availableProviders.some((p) => p.id === selectedProvider)
+      !availableProviders.some((p: { id: string }) => p.id === selectedProvider)
     ) {
       setSelectedProvider(null);
     }
@@ -52,7 +52,7 @@ export function useModelSelection() {
 
   useEffect(() => {
     // If the current providerFilter is no longer valid for the new capability, reset to All providers
-    if (providerFilter && !availableProviders.some((p) => p.id === providerFilter)) {
+    if (providerFilter && !availableProviders.some((p: { id: string }) => p.id === providerFilter)) {
       setProviderFilter(null);
     }
   }, [availableProviders, providerFilter, setProviderFilter]);
@@ -62,7 +62,7 @@ export function useModelSelection() {
       setSelectedModel(null);
       return;
     }
-    if (!displayedModels.some((m) => m.id === (selectedModelValue || ""))) {
+    if (!displayedModels.some((m: { id: string }) => m.id === (selectedModelValue || ""))) {
       // Use selectModelFromCatalog to set both model and provider
       useSelectionsStore.getState().selectModelFromCatalog(displayedModels[0]);
     }

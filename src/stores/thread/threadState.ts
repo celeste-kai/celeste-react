@@ -56,12 +56,12 @@ export const useThreadState = create<ThreadState>((set, _get) => ({
       ...item,
     } as ThreadItem;
 
-    set((state) => ({ items: [...state.items, finalItem] }));
+    set((state: any) => ({ items: [...state.items, finalItem] }));
   },
 
   addText: (content, params) => {
     const part: TextPart = { kind: "text", content };
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -79,7 +79,7 @@ export const useThreadState = create<ThreadState>((set, _get) => ({
 
   addImages: (images, params) => {
     const parts: ImagePart[] = images.map((img) => ({ kind: "image", ...img }));
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -97,7 +97,7 @@ export const useThreadState = create<ThreadState>((set, _get) => ({
 
   addVideos: (videos, params) => {
     const parts: VideoPart[] = videos.map((v) => ({ kind: "video", ...v }));
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -125,13 +125,13 @@ export const useThreadState = create<ThreadState>((set, _get) => ({
       model: params.model,
       parts: [{ kind: "text", content: "" }],
     };
-    set((state) => ({ items: [...state.items, draft] }));
+    set((state: any) => ({ items: [...state.items, draft] }));
     return id;
   },
 
   appendTextToItem: (id, delta) => {
-    set((state) => ({
-      items: state.items.map((it) => {
+    set((state: any) => ({
+      items: state.items.map((it: any) => {
         if (it.id !== id) {
           return it;
         }
