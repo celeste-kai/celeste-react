@@ -2,9 +2,10 @@ import React from "react";
 import textIcon from "../../assets/icons/text.svg?url";
 import imageIcon from "../../assets/icons/image.svg?url";
 import videoIcon from "../../assets/icons/video.svg?url";
+import audioIcon from "../../assets/icons/audio.svg?url";
 import styles from "./ChatInput.module.css";
 
-type Capability = "text" | "image" | "video";
+type Capability = "text" | "image" | "video" | "audio";
 
 type Props = {
   selected: Capability;
@@ -12,6 +13,7 @@ type Props = {
   showText?: boolean;
   showImage?: boolean;
   showVideo?: boolean;
+  showAudio?: boolean;
 };
 
 // Icons moved to ../icons components to keep this component small
@@ -49,6 +51,7 @@ export default function CapabilityButtons({
   showText = true,
   showImage = true,
   showVideo = true,
+  showAudio = true,
 }: Props) {
   return (
     <div className={styles.leftActions}>
@@ -80,6 +83,16 @@ export default function CapabilityButtons({
           ariaLabel="Video capability"
         >
           <img src={videoIcon} width={18} height={18} alt="" aria-hidden />
+        </CapabilityButton>
+      )}
+      {showAudio && (
+        <CapabilityButton
+          active={selected === "audio"}
+          onClick={() => onSelect("audio")}
+          title="Audio"
+          ariaLabel="Audio capability"
+        >
+          <img src={audioIcon} width={18} height={18} alt="" aria-hidden />
         </CapabilityButton>
       )}
     </div>

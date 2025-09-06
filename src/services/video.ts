@@ -1,9 +1,10 @@
-import { API_BASE_URL, handleResponse } from "./base";
+import { api } from "./apiClient";
 
 export type VideoGenerateArgs = {
   provider: string;
   model?: string;
   prompt: string;
+  image?: string;
   options?: Record<string, unknown>;
 };
 
@@ -14,10 +15,5 @@ export type VideoGenerateResponse = {
 export async function generateVideo(
   args: VideoGenerateArgs,
 ): Promise<VideoGenerateResponse> {
-  const res = await fetch(`${API_BASE_URL}/v1/video/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(args),
-  });
-  return handleResponse<VideoGenerateResponse>(res);
+  return api.post<VideoGenerateResponse>("/v1/video/generate", args);
 }

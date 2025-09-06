@@ -10,7 +10,7 @@ export const API_BASE_URL: string = (() => {
 
 export async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const error = await response.text().catch(() => "Unknown error");
+    const error = await response.text();
     throw new Error(error || `HTTP ${response.status}: ${response.statusText}`);
   }
   return response.json();

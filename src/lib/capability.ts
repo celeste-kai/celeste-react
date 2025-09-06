@@ -1,8 +1,10 @@
-export const capabilityFilterMap: Record<"text" | "image" | "video", string> = {
-  text: "text_generation",
-  image: "image_generation",
-  video: "video_generation",
-};
+export const capabilityFilterMap: Record<"text" | "image" | "video" | "audio", string> =
+  {
+    text: "text_generation",
+    image: "image_generation",
+    video: "video_generation",
+    audio: "text_to_speech",
+  };
 
 // Image mode toggle
 export type ImageMode = "generate" | "edit";

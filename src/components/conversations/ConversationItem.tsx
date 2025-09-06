@@ -44,14 +44,7 @@ export function ConversationItem({
       <div className={styles.conversationContent}>
         <div className={styles.conversationTitle}>{conversation.title}</div>
         <div className={styles.conversationMeta}>
-          {formatDate(conversation.updated_at)}
-          {"message_count" in conversation &&
-            conversation.message_count !== undefined && (
-              <span className={styles.messageCount}>
-                {conversation.message_count} message
-                {conversation.message_count !== 1 ? "s" : ""}
-              </span>
-            )}
+          {formatDate(new Date(conversation.updated_at))}
         </div>
       </div>
 

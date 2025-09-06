@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type React from "react";
-import { fileToDataUrl } from "../../utils/image";
+import { fileToDataUrl } from "../utils/image";
 
 // Supported image file extensions for security validation
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
@@ -30,6 +30,7 @@ function validateImageFile(file: File): { valid: boolean; error?: string } {
 export function useImageUpload(opts?: {
   externalImage?: string | null;
   onHandled?: () => void;
+  enableDocumentDrop?: boolean;
 }) {
   const [uploadedImage, setUploadedImage] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
@@ -37,6 +38,7 @@ export function useImageUpload(opts?: {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const externalImage = opts?.externalImage;
+  const _enableDocumentDrop = opts?.enableDocumentDrop;
 
   // Memoize onHandled to prevent unnecessary re-renders
   const onHandled = useCallback(() => {
@@ -82,21 +84,17 @@ export function useImageUpload(opts?: {
         return;
       }
 
-      try {
-        // Clean up previous image
-        if (uploadedImage) {
-          cleanupImage(uploadedImage);
-        }
+      // Clean up previous image
+      if (uploadedImage) {
+        cleanupImage(uploadedImage);
+      }
 
-        const dataUrl = await fileToDataUrl(file);
-        setUploadedImage(dataUrl);
+      const dataUrl = await fileToDataUrl(file);
+      setUploadedImage(dataUrl);
 
-        // Reset file input after successful processing to allow re-uploading the same file
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-      } catch {
-        setError("Failed to process image. Please try again.");
+      // Reset file input after successful processing to allow re-uploading the same file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
     },
     [uploadedImage, cleanupImage],
@@ -139,6 +137,47 @@ export function useImageUpload(opts?: {
     e.stopPropagation();
     setIsDragging(false);
   }, []);
+
+  // Add document-level drag & drop listeners when enabled
+  useEffect(() => {
+    if (!_enableDocumentDrop) return;
+
+    const handleDocumentDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.dataTransfer?.types.includes("Files")) {
+        setIsDragging(true);
+      }
+    };
+
+    const handleDocumentDrop = async (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      const file = e.dataTransfer?.files[0];
+      if (file && file.type.startsWith("image/")) {
+        await selectFile(file);
+      }
+    };
+
+    const handleDocumentDragLeave = (e: DragEvent) => {
+      // Only set isDragging to false if we're leaving the document
+      if (e.clientX === 0 && e.clientY === 0) {
+        setIsDragging(false);
+      }
+    };
+
+    document.addEventListener("dragover", handleDocumentDragOver);
+    document.addEventListener("drop", handleDocumentDrop);
+    document.addEventListener("dragleave", handleDocumentDragLeave);
+
+    return () => {
+      document.removeEventListener("dragover", handleDocumentDragOver);
+      document.removeEventListener("drop", handleDocumentDrop);
+      document.removeEventListener("dragleave", handleDocumentDragLeave);
+    };
+  }, [_enableDocumentDrop, selectFile]);
 
   return {
     uploadedImage,

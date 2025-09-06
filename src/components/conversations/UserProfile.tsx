@@ -9,11 +9,7 @@ export function UserProfile() {
   }
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch {
-      // Error: Sign out failed
-    }
+    await signOut();
   };
 
   // Extract user initials for avatar
@@ -26,9 +22,9 @@ export function UserProfile() {
   return (
     <div className={styles.container}>
       <div className={styles.userInfo}>
-        <div className={styles.avatar}>{getInitials(user.email || "")}</div>
+        <div className={styles.avatar}>{getInitials(user.email)}</div>
         <div className={styles.userDetails}>
-          <div className={styles.userName}>{user.email?.split("@")[0] || "User"}</div>
+          <div className={styles.userName}>{user.email.split("@")[0]}</div>
           <div className={styles.userEmail}>{user.email}</div>
         </div>
       </div>
