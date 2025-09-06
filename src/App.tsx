@@ -1,3 +1,4 @@
+import React from "react";
 import ResultSurface from "./components/results/ResultSurface";
 import InputBar from "./components/input/InputBar";
 import {
@@ -77,7 +78,7 @@ function App() {
               onImageModeChange={setImageMode}
               uploadedImage={image.uploadedImage}
               onClearImage={image.clearImage}
-              fileInputRef={image.fileInputRef}
+              fileInputRef={image.fileInputRef as React.RefObject<HTMLInputElement>}
               onFileSelected={image.selectFile}
               isDragging={image.isDragging}
               onDrop={image.onDrop}

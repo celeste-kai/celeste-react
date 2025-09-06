@@ -1,7 +1,5 @@
 // Use absolute-from-src paths so keys are stable
 const icons = import.meta.glob("/src/assets/icons/*.{svg,png,jpg,jpeg}", {
-  query: "?url",
-  import: "default",
   eager: true,
 }) as Record<string, string>;
 

@@ -73,9 +73,9 @@ export function useCreateConversation() {
   return useMutation({
     mutationFn: (data: CreateConversationRequest) =>
       conversationsService.createConversation(data),
-    onSuccess: (newConversation) => {
+    onSuccess: (newConversation: Conversation) => {
       // Add to list cache
-      queryClient.setQueryData<Conversation[]>(conversationKeys.lists(), (old) =>
+      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
         old ? [newConversation, ...old] : [newConversation],
       );
 
@@ -102,7 +102,7 @@ export function useUpdateConversation() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateConversationRequest }) =>
       conversationsService.updateConversation(id, data),
-    onSuccess: (updatedConversation) => {
+    onSuccess: (updatedConversation: Conversation) => {
       // Update detail cache
       queryClient.setQueryData(
         conversationKeys.detail(updatedConversation.id),
@@ -110,8 +110,8 @@ export function useUpdateConversation() {
       );
 
       // Update list cache
-      queryClient.setQueryData<Conversation[]>(conversationKeys.lists(), (old) =>
-        old?.map((conv) =>
+      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
+        old?.map((conv: Conversation) =>
           conv.id === updatedConversation.id ? updatedConversation : conv,
         ),
       );
@@ -132,15 +132,15 @@ export function useDeleteConversation() {
 
   return useMutation({
     mutationFn: (id: string) => conversationsService.deleteConversation(id),
-    onSuccess: (_, deletedId) => {
+    onSuccess: (_: void, deletedId: string) => {
       // Remove from detail cache
       queryClient.removeQueries({
         queryKey: conversationKeys.detail(deletedId),
       });
 
       // Remove from list cache
-      queryClient.setQueryData<Conversation[]>(conversationKeys.lists(), (old) =>
-        old?.filter((conv) => conv.id !== deletedId),
+      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
+        old?.filter((conv: Conversation) => conv.id !== deletedId),
       );
 
       // Invalidate list queries

@@ -22,7 +22,7 @@ type InputBarViewProps = {
   // upload state/handlers
   uploadedImage: string;
   onClearImage: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  fileInputRef: React.RefObject<HTMLInputElement>;
   onFileSelected: (file: File) => void;
   isDragging: boolean;
   onDrop: (e: React.DragEvent) => void;

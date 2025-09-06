@@ -81,11 +81,11 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
       ...item,
     } as ThreadItem;
 
-    set((state) => ({ items: [...state.items, finalItem] }));
+    set((state: any) => ({ items: [...state.items, finalItem] }));
   },
   addText: (content, params) => {
     const part: TextPart = { kind: "text", content };
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -102,7 +102,7 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
   },
   addImages: (images, params) => {
     const parts: ImagePart[] = images.map((img) => ({ kind: "image", ...img }));
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -119,7 +119,7 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
   },
   addVideos: (videos, params) => {
     const parts: VideoPart[] = videos.map((v) => ({ kind: "video", ...v }));
-    set((state) => ({
+    set((state: any) => ({
       items: [
         ...state.items,
         {
@@ -146,12 +146,12 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
       model: params.model,
       parts: [{ kind: "text", content: "" }],
     };
-    set((state) => ({ items: [...state.items, draft] }));
+    set((state: any) => ({ items: [...state.items, draft] }));
     return id;
   },
   appendTextToItem: (id, delta) => {
-    set((state) => ({
-      items: state.items.map((it) => {
+    set((state: any) => ({
+      items: state.items.map((it: any) => {
         if (it.id !== id) {
           return it;
         }
@@ -412,7 +412,7 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
             // Add new message to thread
             const threadItem = transformMessagesToThreadItems([event.new])[0];
             if (threadItem) {
-              set((state) => ({
+              set((state: any) => ({
                 items: [...state.items, threadItem],
               }));
             }
@@ -420,8 +420,8 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
             // Update existing message
             const threadItem = transformMessagesToThreadItems([event.new])[0];
             if (threadItem) {
-              set((state) => ({
-                items: state.items.map((item) =>
+              set((state: any) => ({
+                items: state.items.map((item: any) =>
                   item.id === threadItem.id ? threadItem : item,
                 ),
               }));
@@ -430,8 +430,8 @@ export const useThreadStore = create<ThreadState>((set, get) => ({
             // Remove message from thread
             const threadItem = transformMessagesToThreadItems([event.old])[0];
             if (threadItem) {
-              set((state) => ({
-                items: state.items.filter((item) => item.id !== threadItem.id),
+              set((state: any) => ({
+                items: state.items.filter((item: any) => item.id !== threadItem.id),
               }));
             }
           }

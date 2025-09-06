@@ -25,7 +25,7 @@ export function ConversationManager({ className }: ConversationManagerProps) {
   // Load most recent conversation on app initialization
   useEffect(() => {
     if (user && !currentConversationId) {
-      loadMostRecentConversation().catch((_error) => {
+      loadMostRecentConversation().catch((_error: any) => {
         // Warning: Failed to load recent conversation on init
       });
     }
