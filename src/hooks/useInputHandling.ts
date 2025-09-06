@@ -4,7 +4,7 @@ import { useSubmission } from "./useSubmission";
 import type { ImageMode } from "../lib/capability";
 
 interface UseInputHandlingProps {
-  selectedCapability: "text" | "image" | "video";
+  selectedCapability: "text" | "image" | "video" | "audio";
   imageMode?: ImageMode;
   uploadedImage?: string;
   onClearImage?: () => void;

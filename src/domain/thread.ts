@@ -1,4 +1,4 @@
-import type { CapabilityId } from "../lib/store/selections";
+import type { CapabilityId } from "../stores/selections";
 
 export type Role = "user" | "assistant" | "system";
 
@@ -27,7 +27,14 @@ export type VideoPart = {
   metadata?: Record<string, unknown>;
 };
 
-export type ContentPart = TextPart | ImagePart | VideoPart;
+export type AudioPart = {
+  kind: "audio";
+  data?: string; // base64 audio data
+  format?: string; // e.g., "wav", "mp3"
+  metadata?: Record<string, unknown>;
+};
+
+export type ContentPart = TextPart | ImagePart | VideoPart | AudioPart;
 
 export interface ThreadItem {
   id: string;

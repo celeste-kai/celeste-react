@@ -42,10 +42,6 @@ export function safeApiDataToDataUrl(
     return undefined;
   }
 
-  try {
-    const dataStr = String(data);
-    return dataStr.startsWith("data:") ? dataStr : base64ToDataUrl(dataStr, mimeType);
-  } catch {
-    return undefined;
-  }
+  const dataStr = String(data);
+  return dataStr.startsWith("data:") ? dataStr : base64ToDataUrl(dataStr, mimeType);
 }

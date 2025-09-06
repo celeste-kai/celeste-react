@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelectionsStore } from "../lib/store/selections";
+import { useSelectionsStore } from "../stores/selections";
 import { useModels, useProviders, useCapabilities } from "../lib/queries/discovery";
 import { capabilityFilterMap, imageModeCapabilityMap } from "../lib/capability";
 
@@ -12,6 +12,7 @@ export function useModelSelection() {
   const providerFilter = useSelectionsStore((s) => s.providerFilter);
   const setProviderFilter = useSelectionsStore((s) => s.setProviderFilter);
   const imageMode = useSelectionsStore((s) => s.imageMode);
+  const selectModelFromCatalog = useSelectionsStore((s) => s.selectModelFromCatalog);
 
   // Determine which capability to filter by based on mode
   const capabilityFilter =
@@ -28,8 +29,13 @@ export function useModelSelection() {
 
   // Derived values
   const showText = capabilities.some((c: { id: string }) => c.id === "text_generation");
-  const showImage = capabilities.some((c: { id: string }) => c.id === "image_generation");
-  const showVideo = capabilities.some((c: { id: string }) => c.id === "video_generation");
+  const showImage = capabilities.some(
+    (c: { id: string }) => c.id === "image_generation",
+  );
+  const showVideo = capabilities.some(
+    (c: { id: string }) => c.id === "video_generation",
+  );
+  const showAudio = capabilities.some((c: { id: string }) => c.id === "text_to_speech");
 
   const availableProviders = providers.filter((p: { id: string }) =>
     models.some((m: { provider: string }) => m.provider === p.id),
@@ -52,21 +58,23 @@ export function useModelSelection() {
 
   useEffect(() => {
     // If the current providerFilter is no longer valid for the new capability, reset to All providers
-    if (providerFilter && !availableProviders.some((p: { id: string }) => p.id === providerFilter)) {
+    if (
+      providerFilter &&
+      !availableProviders.some((p: { id: string }) => p.id === providerFilter)
+    ) {
       setProviderFilter(null);
     }
   }, [availableProviders, providerFilter, setProviderFilter]);
 
   useEffect(() => {
-    if (!displayedModels || displayedModels.length === 0) {
-      setSelectedModel(null);
-      return;
+    if (!displayedModels.some((m: { id: string }) => m.id === selectedModelValue)) {
+      const firstModel = displayedModels[0];
+      // Only select if it's actually a different model
+      if (firstModel && firstModel.id !== selectedModelValue) {
+        selectModelFromCatalog(firstModel);
+      }
     }
-    if (!displayedModels.some((m: { id: string }) => m.id === (selectedModelValue || ""))) {
-      // Use selectModelFromCatalog to set both model and provider
-      useSelectionsStore.getState().selectModelFromCatalog(displayedModels[0]);
-    }
-  }, [displayedModels, selectedModelValue, setSelectedModel]);
+  }, [displayedModels, selectedModelValue, setSelectedModel, selectModelFromCatalog]);
 
   return {
     models: displayedModels,
@@ -75,5 +83,6 @@ export function useModelSelection() {
     showText,
     showImage,
     showVideo,
+    showAudio,
   };
 }

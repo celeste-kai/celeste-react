@@ -1,167 +1,48 @@
-import React, { useState, useCallback, useMemo } from "react";
-import {
-  useConversations,
-  useSearchConversations,
-  useDeleteConversation,
-  usePrefetchConversation,
-} from "../../hooks/useConversations";
+import { useState } from "react";
 import { useThreadStore } from "../../stores/thread/store";
+import { useConversations } from "../../hooks/useConversations";
 import { ConversationItem } from "./ConversationItem";
-import { ConversationSearch } from "./ConversationSearch";
-import { ConversationActions } from "./ConversationActions";
-import { ConversationEmptyState } from "./ConversationEmptyState";
 import type { Conversation } from "../../types/conversations";
 import styles from "./ConversationHistory.module.css";
 
-interface ConversationHistoryProps {
-  onSelectConversation?: (conversationId: string) => void;
-  className?: string;
-  showNewButton?: boolean;
-}
-
-export function ConversationHistory({
-  onSelectConversation,
-  className,
-  showNewButton = true,
-}: ConversationHistoryProps) {
+export default function ConversationHistory() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchMode, setIsSearchMode] = useState(false);
+  const { currentConversationId, loadConversation, clear } = useThreadStore();
+  const { data: conversations = [] } = useConversations();
 
-  // Store state
-  const {
-    currentConversationId,
-    loadConversation,
-    createNewConversation,
-    isLoading: threadLoading,
-    error: threadError,
-  } = useThreadStore();
-
-  // Queries
-  const {
-    data: conversations,
-    isLoading: conversationsLoading,
-    error: conversationsError,
-  } = useConversations();
-
-  const { data: searchResults, isLoading: searchLoading } = useSearchConversations(
-    searchQuery,
-    isSearchMode && searchQuery.length > 2,
-  );
-
-  // Mutations
-  const deleteConversationMutation = useDeleteConversation();
-  const prefetchConversation = usePrefetchConversation();
-
-  // Handlers
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-    setIsSearchMode(query.length > 0);
-  }, []);
-
-  const handleSelectConversation = useCallback(
-    async (conversation: Conversation) => {
-      try {
-        await loadConversation(conversation.id);
-        onSelectConversation?.(conversation.id);
-      } catch {
-        // Error: Failed to load conversation
-      }
-    },
-    [loadConversation, onSelectConversation],
-  );
-
-  const handleCreateNew = useCallback(async () => {
-    try {
-      const conversationId = await createNewConversation();
-      onSelectConversation?.(conversationId);
-    } catch {
-      // Error: Failed to create conversation
-    }
-  }, [createNewConversation, onSelectConversation]);
-
-  const handleDeleteConversation = useCallback(
-    async (conversationId: string, event: React.MouseEvent) => {
-      event.stopPropagation();
-
-      if (!window.confirm("Are you sure you want to delete this conversation?")) {
-        return;
-      }
-
-      try {
-        await deleteConversationMutation.mutateAsync(conversationId);
-      } catch {
-        // Error: Failed to delete conversation
-      }
-    },
-    [deleteConversationMutation],
-  );
-
-  const handleMouseEnter = useCallback(
-    (conversationId: string) => {
-      prefetchConversation(conversationId);
-    },
-    [prefetchConversation],
-  );
-
-  // Computed values
-  const displayedConversations = useMemo(() => {
-    if (isSearchMode && searchResults) {
-      return searchResults;
-    }
-    return conversations || [];
-  }, [isSearchMode, searchResults, conversations]);
-
-  const isLoading = conversationsLoading || searchLoading || threadLoading;
-  const error = conversationsError || threadError;
+  const filteredConversations = searchQuery
+    ? conversations.filter((c: Conversation) =>
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : conversations;
 
   return (
-    <div className={`${styles.container} ${className || ""}`}>
-      <ConversationActions
-        showNewButton={showNewButton}
-        isLoading={isLoading}
-        onCreateNew={handleCreateNew}
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>Conversations</h3>
+        <button onClick={clear} className={styles.newButton}>
+          New Chat
+        </button>
+      </div>
+
+      <input
+        className={styles.searchInput}
+        type="text"
+        placeholder="Search conversations..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      <ConversationSearch
-        searchQuery={searchQuery}
-        isSearchMode={isSearchMode}
-        onSearch={handleSearch}
-      />
-
-      {/* Error Display */}
-      {error && (
-        <div className={styles.error}>
-          {typeof error === "string" ? error : "An error occurred"}
-        </div>
-      )}
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className={styles.loading}>
-          <div className={styles.spinner} />
-          Loading conversations...
-        </div>
-      )}
-
-      {/* Conversations List */}
-      <div className={styles.conversationsList}>
-        {displayedConversations.length === 0 && !isLoading && (
-          <ConversationEmptyState
-            isSearchMode={isSearchMode}
-            searchQuery={searchQuery}
-            onCreateNew={handleCreateNew}
-          />
-        )}
-
-        {displayedConversations.map((conversation: Conversation) => (
+      <div className={styles.list}>
+        {filteredConversations.map((conversation: Conversation) => (
           <ConversationItem
             key={conversation.id}
             conversation={conversation}
             isActive={conversation.id === currentConversationId}
-            onSelect={() => handleSelectConversation(conversation)}
-            onDelete={(e) => handleDeleteConversation(conversation.id, e)}
-            onMouseEnter={() => handleMouseEnter(conversation.id)}
-            isDeleting={deleteConversationMutation.isPending}
+            isDeleting={false}
+            onSelect={() => loadConversation(conversation.id)}
+            onDelete={() => {}}
+            onMouseEnter={() => {}}
           />
         ))}
       </div>

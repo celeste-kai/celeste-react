@@ -1,7 +1,13 @@
 // Use absolute-from-src paths so keys are stable
-const icons = import.meta.glob("/src/assets/icons/*.{svg,png,jpg,jpeg}", {
+const iconModules = import.meta.glob("/src/assets/icons/*.{svg,png,jpg,jpeg}", {
   eager: true,
-}) as Record<string, string>;
+});
+
+// Convert modules to URLs
+const icons: Record<string, string> = {};
+Object.entries(iconModules).forEach(([path, module]) => {
+  icons[path] = (module as any).default;
+});
 
 export function ProviderIcon({
   id,
@@ -23,12 +29,12 @@ export function ProviderIcon({
     }
   }
 
-  // Fallback to default if not found
+  // No fallbacks - let it crash if icon not found
   if (!src) {
-    src = icons["/src/assets/icons/default.svg"];
+    throw new Error(`Icon not found for provider: ${id}`);
   }
   // Check if the image is an SVG
-  const isSvg = src.includes(".svg");
+  const isSvg = src && src.includes(".svg");
 
   // Add white background for xai provider
   const backgroundColor = id === "xai" ? "#FFFFFF" : "transparent";
@@ -44,6 +50,9 @@ export function ProviderIcon({
         borderRadius: isSvg ? "0" : "50%",
         objectFit: "cover",
         backgroundColor,
+      }}
+      onError={(_e) => {
+        throw new Error(`Failed to load icon: ${src} for provider: ${id}`);
       }}
     />
   );

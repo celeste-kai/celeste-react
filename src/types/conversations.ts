@@ -1,5 +1,5 @@
 import type { ContentPart, Role } from "../domain/thread";
-import type { CapabilityId } from "../lib/store/selections";
+import type { CapabilityId } from "../stores/selections";
 
 // Database types matching our Supabase schema
 export interface DatabaseConversation {
@@ -11,7 +11,7 @@ export interface DatabaseConversation {
   metadata: Record<string, unknown>;
 }
 
-export interface DatabaseConversationMessage {
+export interface DatabaseMessage {
   id: string;
   conversation_id: string;
   user_id: string;
@@ -25,33 +25,14 @@ export interface DatabaseConversationMessage {
   metadata: Record<string, unknown>;
 }
 
-export interface DatabaseConversationAttachment {
-  id: string;
-  message_id: string;
-  file_path: string;
-  mime_type: string;
-  file_size?: number;
-  metadata: Record<string, unknown>;
-  created_at: string;
-}
-
 // Client-side types with computed properties
 export interface Conversation
   extends Omit<DatabaseConversation, "created_at" | "updated_at"> {
   created_at: Date;
   updated_at: Date;
-  message_count?: number;
-  last_message_at?: Date;
 }
 
-export interface ConversationMessage
-  extends Omit<DatabaseConversationMessage, "created_at"> {
-  created_at: Date;
-  attachments?: ConversationAttachment[];
-}
-
-export interface ConversationAttachment
-  extends Omit<DatabaseConversationAttachment, "created_at"> {
+export interface ConversationMessage extends Omit<DatabaseMessage, "created_at"> {
   created_at: Date;
 }
 

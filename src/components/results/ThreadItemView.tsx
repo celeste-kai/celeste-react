@@ -1,18 +1,36 @@
 import styles from "./ThreadItemView.module.css";
-import TextPart from "./parts/TextPart";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 import ImagePart from "./parts/ImagePart";
-import VideoPart from "./parts/VideoPart";
 import type { ContentPart, ThreadItem, Role } from "../../domain/thread";
 
 function PartView({ part, role }: { part: ContentPart; role: Role }) {
   if (part.kind === "text") {
-    return <TextPart content={part.content} />;
+    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>;
   }
   if (part.kind === "image") {
     return <ImagePart {...part} role={role} />;
   }
   if (part.kind === "video") {
-    return <VideoPart url={part.url} path={part.path} />;
+    const src = part.url || part.path;
+    return src ? (
+      <video src={src} controls playsInline style={{ maxWidth: "100%" }} />
+    ) : null;
+  }
+  if (part.kind === "audio") {
+    return part.data ? (
+      <AudioPlayer
+        src={part.data}
+        showJumpControls={false}
+        showDownloadProgress={false}
+        showFilledProgress={true}
+        autoPlayAfterSrcChange={false}
+        customAdditionalControls={[]}
+        layout="horizontal-reverse"
+      />
+    ) : null;
   }
   return null;
 }

@@ -75,8 +75,10 @@ export function useCreateConversation() {
       conversationsService.createConversation(data),
     onSuccess: (newConversation: Conversation) => {
       // Add to list cache
-      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
-        old ? [newConversation, ...old] : [newConversation],
+      queryClient.setQueryData(
+        conversationKeys.lists(),
+        (old: Conversation[] | undefined) =>
+          old ? [newConversation, ...old] : [newConversation],
       );
 
       // Add to detail cache
@@ -110,10 +112,12 @@ export function useUpdateConversation() {
       );
 
       // Update list cache
-      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
-        old?.map((conv: Conversation) =>
-          conv.id === updatedConversation.id ? updatedConversation : conv,
-        ),
+      queryClient.setQueryData(
+        conversationKeys.lists(),
+        (old: Conversation[] | undefined) =>
+          old?.map((conv: Conversation) =>
+            conv.id === updatedConversation.id ? updatedConversation : conv,
+          ),
       );
 
       // Invalidate list queries to ensure consistency
@@ -139,8 +143,10 @@ export function useDeleteConversation() {
       });
 
       // Remove from list cache
-      queryClient.setQueryData(conversationKeys.lists(), (old: Conversation[] | undefined) =>
-        old?.filter((conv: Conversation) => conv.id !== deletedId),
+      queryClient.setQueryData(
+        conversationKeys.lists(),
+        (old: Conversation[] | undefined) =>
+          old?.filter((conv: Conversation) => conv.id !== deletedId),
       );
 
       // Invalidate list queries
