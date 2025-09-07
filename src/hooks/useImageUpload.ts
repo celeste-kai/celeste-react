@@ -1,5 +1,6 @@
-import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { DragEvent } from "react";
+import type { ImageArtifact } from "../core/types";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -12,22 +13,31 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 export function useImageUpload(enableDocumentDrop = false) {
-  const [uploadedImage, setUploadedImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<ImageArtifact | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selectFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/") || file.size > MAX_FILE_SIZE) return;
-    setUploadedImage(await fileToDataUrl(file));
+    const dataUrl = await fileToDataUrl(file);
+    const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+    setUploadedImage({
+      data: base64Data,
+      metadata: {
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size
+      }
+    });
   }, []);
 
   const clearImage = useCallback(() => {
-    setUploadedImage("");
+    setUploadedImage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, []);
 
   const onDrop = useCallback(
-    (e: React.DragEvent) => {
+    (e: DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       const file = e.dataTransfer.files?.[0];
@@ -36,7 +46,7 @@ export function useImageUpload(enableDocumentDrop = false) {
     [selectFile]
   );
 
-  const onDragOver = useCallback((e: React.DragEvent) => {
+  const onDragOver = useCallback((e: DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   }, []);
@@ -46,14 +56,14 @@ export function useImageUpload(enableDocumentDrop = false) {
   useEffect(() => {
     if (!enableDocumentDrop) return;
 
-    const handleDrop = (e: DragEvent) => {
+    const handleDrop = (e: globalThis.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       const file = e.dataTransfer?.files[0];
       if (file?.type.startsWith("image/")) selectFile(file);
     };
 
-    const handleDragOver = (e: DragEvent) => {
+    const handleDragOver = (e: globalThis.DragEvent) => {
       e.preventDefault();
       setIsDragging(true);
     };
@@ -77,5 +87,3 @@ export function useImageUpload(enableDocumentDrop = false) {
     onDragLeave,
   };
 }
-
-export default useImageUpload;

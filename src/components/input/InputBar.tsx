@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import styles from "../chat/ChatInput.module.css";
 import { ProviderSelect } from "../controls/ProviderSelect";
 import { ModelSelect } from "../controls/ModelSelect";
@@ -7,7 +8,7 @@ import { useSelectionStore } from "../../stores/selection.store";
 import { useUIStore } from "../../stores/ui.store";
 import { useThread } from "../../hooks/useThread";
 import { useModelSelection } from "../../hooks/useModelSelection";
-import useImageUpload from "../../hooks/useImageUpload";
+import { useImageUpload } from "../../hooks/useImageUpload";
 import { Capability } from "../../core/enums";
 
 export default function InputBar() {
@@ -48,15 +49,15 @@ export default function InputBar() {
     capability === Capability.IMAGE_GENERATION || capability === Capability.VIDEO_GENERATION
   );
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     setInputValue(e.target.value);
   }, []);
 
   const handleKeyPress = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        sendMessage(inputValue, uploadedImage || undefined);
+        sendMessage(inputValue, uploadedImage);
         setInputValue("");
         clearImage();
       }
@@ -65,16 +66,20 @@ export default function InputBar() {
   );
 
   const handleSend = useCallback(() => {
-    sendMessage(inputValue, uploadedImage || undefined);
+    sendMessage(inputValue, uploadedImage);
     setInputValue("");
     clearImage();
   }, [inputValue, uploadedImage, sendMessage, clearImage]);
 
   useEffect(() => {
-    if (capability === Capability.IMAGE_GENERATION) {
-      setImageMode(uploadedImage ? "edit" : "generate");
+    if (capability === Capability.IMAGE_GENERATION && uploadedImage) {
+      setCapability(Capability.IMAGE_EDIT);
+      setImageMode("edit");
+    } else if (capability === Capability.IMAGE_EDIT && !uploadedImage) {
+      setCapability(Capability.IMAGE_GENERATION);
+      setImageMode("generate");
     }
-  }, [uploadedImage, capability, setImageMode]);
+  }, [uploadedImage, capability, setCapability, setImageMode]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -104,7 +109,7 @@ export default function InputBar() {
       <div className={styles.container}>
         {uploadedImage && (
           <div className={styles.imagePreview}>
-            <img src={uploadedImage} alt="Upload" />
+            <img src={`data:image/png;base64,${uploadedImage.data}`} alt="Upload" />
             <button onClick={clearImage} className={styles.clearImage} type="button">
               ×
             </button>

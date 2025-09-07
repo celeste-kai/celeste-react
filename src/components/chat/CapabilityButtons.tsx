@@ -1,10 +1,10 @@
-import React from "react";
 import textIcon from "../../assets/icons/text.svg?url";
 import imageIcon from "../../assets/icons/image.svg?url";
 import videoIcon from "../../assets/icons/video.svg?url";
 import audioIcon from "../../assets/icons/audio.svg?url";
 import styles from "./ChatInput.module.css";
 
+import type { ReactNode } from "react";
 import { Capability } from "../../core/enums";
 
 type Props = {
@@ -29,7 +29,7 @@ function CapabilityButton({
   onClick: () => void;
   title: string;
   ariaLabel: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <button

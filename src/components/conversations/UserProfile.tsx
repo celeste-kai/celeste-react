@@ -1,7 +1,7 @@
 import { useAuth } from "../../lib/auth/context";
 import styles from "./UserProfile.module.css";
 
-export function UserProfile() {
+export function UserProfile({ isExpanded }: { isExpanded: boolean }) {
   const { user, signOut } = useAuth();
 
   if (!user) {
@@ -20,7 +20,7 @@ export function UserProfile() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${!isExpanded ? styles.collapsed : ''}`}>
       <div className={styles.userInfo}>
         <div className={styles.avatar}>{getInitials(user.email)}</div>
         <div className={styles.userDetails}>

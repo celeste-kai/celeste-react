@@ -11,8 +11,9 @@ Celeste React is the frontend interface for the Celeste multi-modal AI framework
 ### State Management
 
 - **Zustand stores**: Primary state management solution
-  - `useThreadStore` (`src/stores/thread/store.ts`): Manages conversation threads and messages
-  - `useSelectionsStore` (`src/lib/store/selections.ts`): Manages UI selections (capability, provider, model, filters)
+  - `useThreadStore` (`src/stores/thread.store.ts`): Manages conversation threads and messages
+  - `useSelectionStore` (`src/stores/selection.store.ts`): Manages UI selections (capability, provider, model, filters)
+  - `useUIStore` (`src/stores/ui.store.ts`): Manages UI state
 - **TanStack Query**: Server state management and API caching (configured in `src/lib/queryClient.ts`)
 - **Local storage**: Persists user selections across sessions
 
@@ -25,10 +26,10 @@ Celeste React is the frontend interface for the Celeste multi-modal AI framework
 
 ### Key Patterns
 
-- **Custom hooks**: `useSelections`, `useModelSelection`, `useInputHandling`, `useDragAndDrop`
-- **Controller pattern**: Business logic in `src/controllers/` for different capabilities
-- **Type-safe API**: TypeScript definitions in `src/types/api.ts`
-- **Stream handling**: Real-time response streaming in `src/lib/stream.ts`
+- **Custom hooks**: `useThread`, `useModelSelection`, `useInputHandling`, `useImageUpload`
+- **Infrastructure layer**: API calls in `src/infrastructure/api.ts`, storage in `src/infrastructure/repository.ts`
+- **Type-safe domain model**: TypeScript definitions in `src/domain/types.ts` and `src/core/types/`
+- **Stream handling**: Real-time response streaming handled directly in API functions
 
 ## Development Commands
 
@@ -54,10 +55,9 @@ npm run format:check   # Check formatting
 
 ### Component Development
 
-- Components in `src/components/` are organized by feature area (chat, controls, image, input, results, video)
-- Shared/common components in `src/common/components/`
-- Use CSS modules for component-specific styles
-- Follow the existing pattern of extracting complex logic into custom hooks
+- Components in `src/components/` are organized by feature area (auth, chat, controls, conversations, icons, image, input, results)
+- Use CSS modules for component-specific styles (`.module.css` files)
+- Follow the existing pattern of extracting complex logic into custom hooks in `src/hooks/`
 
 ### State Updates
 
@@ -67,23 +67,23 @@ npm run format:check   # Check formatting
 
 ### API Integration
 
-- Services in `src/services/` handle API communication
-- Base API configuration in `src/services/base.ts`
-- Streaming responses handled through `src/lib/stream.ts`
+- API calls in `src/infrastructure/api.ts` handle all backend communication
+- Repository in `src/infrastructure/repository.ts` manages local storage
+- Streaming responses handled directly in the API functions using AsyncGenerator
 
 ### Adding New Capabilities
 
-1. Add capability type to `CapabilityId` in `src/lib/store/selections.ts`
-2. Create controller in `src/controllers/`
-3. Add UI components in appropriate `src/components/` subdirectory
-4. Update `useModelSelection` hook to include new capability
-5. Add API service in `src/services/`
+1. Add capability type to `Capability` enum in `src/core/enums/capability.ts`
+2. Add API function in `src/infrastructure/api.ts`
+3. Update `useThread` hook in `src/hooks/useThread.ts` to handle new capability
+4. Add UI components in appropriate `src/components/` subdirectory
+5. Update `useModelSelection` hook to include new capability
 
 ## Important Patterns
 
 ### Stream Processing
 
-The app handles real-time streaming responses from the API using NDJSON format. See `src/lib/stream.ts` for the streaming implementation.
+The app handles real-time streaming responses from the API using NDJSON format. Streaming is implemented directly in `src/infrastructure/api.ts` using AsyncGenerator patterns.
 
 ### Image Upload Flow
 

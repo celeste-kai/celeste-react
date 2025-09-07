@@ -56,6 +56,21 @@ export class Thread {
     }
   }
 
+  appendPartsToMessage(messageId: string, parts: ContentPart[]): void {
+    const message = this.messages.find(m => m.getId() === messageId);
+    if (!message) return;
+
+    message.appendParts(parts);
+
+    if (!this.changes.find(c => c.id === messageId)) {
+      this.changes.push({
+        type: "update",
+        entity: message,
+        id: messageId
+      });
+    }
+  }
+
   appendTextToMessage(messageId: string, text: string): void {
     const message = this.messages.find(m => m.getId() === messageId);
     if (!message) return;
@@ -69,6 +84,13 @@ export class Thread {
         id: messageId
       });
     }
+  }
+
+  clone(): Thread {
+    const cloned = new Thread(this.id);
+    cloned.messages = [...this.messages];
+    cloned.changes = [...this.changes];
+    return cloned;
   }
 
   getMessages(): Message[] {

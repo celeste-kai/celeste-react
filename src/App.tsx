@@ -1,4 +1,3 @@
-import React from "react";
 import ResultSurface from "./components/results/ResultSurface";
 import InputBar from "./components/input/InputBar";
 import { AuthProvider } from "./lib/auth/context";

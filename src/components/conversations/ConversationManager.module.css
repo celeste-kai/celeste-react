@@ -17,14 +17,46 @@
   width: 280px; /* Expanded width on hover */
 }
 
-.topSection {
-  padding: 6rem 1rem 1rem 1rem;
-  border-bottom: 1px solid var(--color-border);
-  transition: padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+.newChatContainer {
+  position: absolute;
+  top: 3.5rem;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 10;
 }
 
-.sidebar:not(:hover) .topSection {
-  padding: 6rem 0.5rem 1rem 0.5rem; /* Reduced padding for better centering in 60px width */
+.newChatButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 300;
+  transition: background-color 0.2s ease;
+}
+
+.newChatButton:hover {
+  background-color: var(--color-accent-2);
+}
+
+.newChatText {
+  display: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+}
+
+.sidebar:hover .newChatText {
+  display: block;
 }
 
 .newConversationButton {
@@ -114,6 +146,19 @@
   opacity: 0;
   transform: translateX(-15px);
   pointer-events: none;
+}
+
+/* Hide ConversationHistory when collapsed */
+.sidebar:not(:hover) > div:nth-child(2) {
+  display: none;
+}
+
+/* Position UserProfile at bottom */
+.sidebar > div:last-child {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .conversations {
