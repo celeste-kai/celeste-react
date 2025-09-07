@@ -8,8 +8,13 @@
   transition: all 0.3s ease;
 }
 
-/* Collapsed sidebar: hide entire user profile */
-.sidebar:not(:hover) .container {
+.collapsed {
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.collapsed .signOutButton,
+.collapsed .userDetails {
   display: none;
 }
 
@@ -22,10 +27,10 @@
   transition: gap 0.3s ease;
 }
 
-/* Remove gap when collapsed to center avatar better */
-.sidebar:not(:hover) .userInfo {
+.collapsed .userInfo {
   gap: 0;
-  flex: none; /* Don't expand when collapsed */
+  flex: none;
+  justify-content: center;
 }
 
 .avatar {
@@ -48,10 +53,6 @@
   transition: opacity 0.3s ease;
 }
 
-/* Completely hide user details when sidebar is collapsed */
-.sidebar:not(:hover) .userDetails {
-  display: none; /* Complete removal from layout */
-}
 
 .userName {
   font-size: 0.875rem;
@@ -83,10 +84,6 @@
   justify-content: center;
 }
 
-/* Completely hide sign out button when sidebar is collapsed */
-.sidebar:not(:hover) .signOutButton {
-  display: none; /* Complete removal from layout */
-}
 
 .signOutButton:hover {
   background-color: var(--color-hover);

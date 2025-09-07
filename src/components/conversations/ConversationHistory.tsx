@@ -7,7 +7,7 @@ import styles from "./ConversationHistory.module.css";
 
 export default function ConversationHistory() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { conversationId, clear } = useThreadStore();
+  const { conversationId } = useThreadStore();
   const { conversations, deleteConversation } = useConversation();
   const { loadThread } = useThread();
 
@@ -21,18 +21,17 @@ export default function ConversationHistory() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h3 className={styles.title}>Conversations</h3>
-        <button onClick={clear} className={styles.newButton}>
-          New Chat
-        </button>
       </div>
 
-      <input
-        className={styles.searchInput}
-        type="text"
-        placeholder="Search conversations..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <div className={styles.searchContainer}>
+        <input
+          className={styles.searchInput}
+          type="text"
+          placeholder="Search conversations..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
 
       <div className={styles.list}>
         {filteredConversations.map((conversation) => (

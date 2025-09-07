@@ -1,0 +1,65 @@
+.audioContainer {
+  width: 100%;
+  margin: var(--space-2) 0;
+}
+
+.player {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: var(--space-2) 0 !important;
+  box-shadow: none !important;
+}
+
+/* Main controls */
+.player :global(.rhap_main-controls-button) {
+  color: var(--color-text) !important;
+  transition: color 0.2s ease;
+}
+
+.player :global(.rhap_main-controls-button:hover) {
+  color: var(--color-accent) !important;
+}
+
+/* Progress bar */
+.player :global(.rhap_progress-bar) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  height: 4px !important;
+  border-radius: 2px !important;
+}
+
+.player :global(.rhap_progress-filled),
+.player :global(.rhap_progress-indicator) {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2)) !important;
+}
+
+.player :global(.rhap_progress-indicator) {
+  width: 12px !important;
+  height: 12px !important;
+  top: -4px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Time display */
+.player :global(.rhap_time) {
+  color: var(--color-text-muted) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+/* Volume controls */
+.player :global(.rhap_volume-button) {
+  color: var(--color-text-muted) !important;
+  transition: color 0.2s ease;
+}
+
+.player :global(.rhap_volume-button:hover) {
+  color: var(--color-text) !important;
+}
+
+.player :global(.rhap_volume-bar) {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.player :global(.rhap_volume-indicator) {
+  background: var(--color-accent) !important;
+}

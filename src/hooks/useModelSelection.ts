@@ -1,19 +1,14 @@
 import { useEffect } from "react";
 import { useSelectionStore } from "../stores/selection.store";
-import { useUIStore } from "../stores/ui.store";
 import { useModels, useProviders, useCapabilities } from "../lib/queries/discovery";
 import { Capability, Provider } from "../core/enums";
 
 const capabilityFilterMap: Record<string, string> = {
   [Capability.TEXT_GENERATION]: "text_generation",
   [Capability.IMAGE_GENERATION]: "image_generation",
+  [Capability.IMAGE_EDIT]: "image_edit",
   [Capability.VIDEO_GENERATION]: "video_generation",
   [Capability.TEXT_TO_SPEECH]: "text_to_speech",
-};
-
-const imageModeCapabilityMap: Record<string, string> = {
-  generate: "image_generation",
-  edit: "image_edit",
 };
 
 export function useModelSelection() {
@@ -25,12 +20,7 @@ export function useModelSelection() {
   const setProvider = useSelectionStore((s) => s.setProvider);
   const setProviderFilter = useSelectionStore((s) => s.setProviderFilter);
 
-  const imageMode = useUIStore((s) => s.imageMode);
-
-  const capabilityFilter =
-    selectedCapability === Capability.IMAGE_GENERATION && imageMode === "edit"
-      ? imageModeCapabilityMap[imageMode]
-      : capabilityFilterMap[selectedCapability];
+  const capabilityFilter = capabilityFilterMap[selectedCapability];
 
   const { data: models = [], isFetching } = useModels(capabilityFilter);
   const { data: providers = [] } = useProviders();

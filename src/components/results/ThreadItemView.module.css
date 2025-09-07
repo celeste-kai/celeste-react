@@ -48,9 +48,25 @@
   padding: 12px 14px;
 }
 
-.text {
+.parts {
   color: var(--color-text);
   line-height: 1.5;
+}
+
+.parts > * + * {
+  margin-top: 0.75rem;
+}
+
+.userParts img,
+.userParts video {
+  max-width: 300px;
+  border-radius: 8px;
+}
+
+.assistantParts img,
+.assistantParts video {
+  max-width: 100%;
+  border-radius: 8px;
 }
 
 .userCard {

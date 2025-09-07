@@ -68,6 +68,17 @@ export class Message {
     }
   }
 
+  appendParts(newParts: ContentPart[]): void {
+    // Remove empty text placeholder if it exists
+    if (this.content.parts.length === 1 &&
+        this.content.parts[0].kind === "text" &&
+        !this.content.parts[0].content) {
+      this.content.parts = newParts;
+    } else {
+      this.content.parts.push(...newParts);
+    }
+  }
+
   updateContent(parts: ContentPart[]): void {
     this.content = { parts };
   }

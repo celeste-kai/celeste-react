@@ -53,6 +53,21 @@ export async function generateImages(
   return data.images;
 }
 
+export async function editImage(
+  provider: Provider,
+  model: string,
+  prompt: string,
+  image: string
+): Promise<ImageArtifact> {
+  const res = await fetch(`${BASE_URL}/v1/images/edit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ provider, model, prompt, image })
+  });
+  const data = await res.json();
+  return data.image;
+}
+
 export async function generateVideo(
   provider: Provider,
   model: string,
@@ -65,7 +80,11 @@ export async function generateVideo(
     body: JSON.stringify({ provider, model, prompt, image })
   });
   const data = await res.json();
-  return data.videos;
+  return data.videos.map((v: any) => ({
+    ...v,
+    path: v.url?.startsWith('/v1/') ? `${BASE_URL}${v.url}` : (v.url || v.path),
+    url: undefined
+  }));
 }
 
 export async function generateAudio(
@@ -73,13 +92,17 @@ export async function generateAudio(
   model: string,
   text: string
 ): Promise<AudioArtifact> {
-  const res = await fetch(`${BASE_URL}/v1/audio/tts`, {
+  const res = await fetch(`${BASE_URL}/v1/audio/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ provider, model, text })
   });
   const data = await res.json();
-  return data.audio;
+  return {
+    ...data.audio,
+    path: data.audio.url?.startsWith('/v1/') ? `${BASE_URL}${data.audio.url}` : (data.audio.url || data.audio.path),
+    url: undefined
+  };
 }
 
 export async function getHealth() {
@@ -104,5 +127,6 @@ export async function listModels(capability?: string, provider?: string) {
 
   const url = `${BASE_URL}/v1/models${params.toString() ? `?${params}` : ""}`;
   const res = await fetch(url);
-  return res.json();
+  const data = await res.json();
+  return data.map((m: any) => ({ ...m, displayName: m.display_name }));
 }

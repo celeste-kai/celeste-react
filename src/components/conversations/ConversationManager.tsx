@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../lib/auth/context";
 import { useThreadStore } from "../../stores/thread.store";
 import { useThread } from "../../hooks/useThread";
@@ -9,7 +9,9 @@ import styles from "./ConversationManager.module.css";
 export function ConversationManager() {
   const { user } = useAuth();
   const conversationId = useThreadStore((s) => s.conversationId);
+  const { clear } = useThreadStore();
   const { saveThread } = useThread();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (!conversationId || !user) return;
@@ -24,9 +26,23 @@ export function ConversationManager() {
   if (!user) return null;
 
   return (
-    <div className={styles.sidebar}>
-      <UserProfile />
+    <div
+      className={styles.sidebar}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+    >
+      <div className={styles.newChatContainer}>
+        <button
+          className={styles.newChatButton}
+          onClick={clear}
+          title="New Chat"
+        >
+          +
+        </button>
+        <span className={styles.newChatText}>New Chat</span>
+      </div>
       <ConversationHistory />
+      <UserProfile isExpanded={isExpanded} />
     </div>
   );
 }

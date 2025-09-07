@@ -9,7 +9,6 @@ export type TextPart = {
 
 export type ImagePart = {
   kind: "image";
-  url?: string;
 } & ImageArtifact;
 
 export type VideoPart = {
