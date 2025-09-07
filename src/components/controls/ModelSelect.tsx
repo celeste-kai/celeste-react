@@ -1,5 +1,5 @@
 import { SimpleDropdown } from "./SimpleDropdown";
-import type { ModelOut } from "../../types/api";
+import type { Model } from "../../core/models/model";
 
 export function ModelSelect({
   models,
@@ -7,14 +7,14 @@ export function ModelSelect({
   isLoading = false,
   onSelect,
 }: {
-  models: ModelOut[];
+  models: Model[];
   value: string;
   isLoading?: boolean;
-  onSelect: (m: ModelOut) => void;
+  onSelect: (m: Model) => void;
 }) {
   const items = models.map((model) => ({
     id: model.id,
-    label: model.display_name || model.id,
+    label: model.displayName || model.id,
   }));
 
   return (

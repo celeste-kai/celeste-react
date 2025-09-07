@@ -1,4 +1,4 @@
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../lib/auth/context";
 import styles from "./UserProfile.module.css";
 
 export function UserProfile() {

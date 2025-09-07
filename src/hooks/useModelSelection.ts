@@ -1,33 +1,41 @@
 import { useEffect } from "react";
-import { useSelectionsStore } from "../stores/selections";
+import { useSelectionStore } from "../stores/selection.store";
+import { useUIStore } from "../stores/ui.store";
 import { useModels, useProviders, useCapabilities } from "../lib/queries/discovery";
-import { capabilityFilterMap, imageModeCapabilityMap } from "../lib/capability";
+import { Capability, Provider } from "../core/enums";
+
+const capabilityFilterMap: Record<string, string> = {
+  [Capability.TEXT_GENERATION]: "text_generation",
+  [Capability.IMAGE_GENERATION]: "image_generation",
+  [Capability.VIDEO_GENERATION]: "video_generation",
+  [Capability.TEXT_TO_SPEECH]: "text_to_speech",
+};
+
+const imageModeCapabilityMap: Record<string, string> = {
+  generate: "image_generation",
+  edit: "image_edit",
+};
 
 export function useModelSelection() {
-  const selectedCapability = useSelectionsStore((s) => s.capability);
-  const selectedModelValue = useSelectionsStore((s) => s.model);
-  const setSelectedModel = useSelectionsStore((s) => s.setModel);
-  const selectedProvider = useSelectionsStore((s) => s.provider);
-  const setSelectedProvider = useSelectionsStore((s) => s.setProvider);
-  const providerFilter = useSelectionsStore((s) => s.providerFilter);
-  const setProviderFilter = useSelectionsStore((s) => s.setProviderFilter);
-  const imageMode = useSelectionsStore((s) => s.imageMode);
-  const selectModelFromCatalog = useSelectionsStore((s) => s.selectModelFromCatalog);
+  const selectedCapability = useSelectionStore((s) => s.capability);
+  const selectedModelValue = useSelectionStore((s) => s.model);
+  const selectedProvider = useSelectionStore((s) => s.provider);
+  const providerFilter = useSelectionStore((s) => s.providerFilter);
+  const selectModel = useSelectionStore((s) => s.selectModel);
+  const setProvider = useSelectionStore((s) => s.setProvider);
+  const setProviderFilter = useSelectionStore((s) => s.setProviderFilter);
 
-  // Determine which capability to filter by based on mode
+  const imageMode = useUIStore((s) => s.imageMode);
+
   const capabilityFilter =
-    selectedCapability === "image" && imageMode === "edit"
+    selectedCapability === Capability.IMAGE_GENERATION && imageMode === "edit"
       ? imageModeCapabilityMap[imageMode]
       : capabilityFilterMap[selectedCapability];
 
-  // Use TanStack Query hooks for data fetching
-  const { data: models = [], isFetching } = useModels({
-    capability: capabilityFilter,
-  });
+  const { data: models = [], isFetching } = useModels(capabilityFilter);
   const { data: providers = [] } = useProviders();
   const { data: capabilities = [] } = useCapabilities();
 
-  // Derived values
   const showText = capabilities.some((c: { id: string }) => c.id === "text_generation");
   const showImage = capabilities.some(
     (c: { id: string }) => c.id === "image_generation",
@@ -46,18 +54,16 @@ export function useModelSelection() {
       ? models
       : models.filter((m: { provider: string }) => m.provider === providerFilter);
 
-  // Auto-selection effects
   useEffect(() => {
     if (
       selectedProvider &&
       !availableProviders.some((p: { id: string }) => p.id === selectedProvider)
     ) {
-      setSelectedProvider(null);
+      setProvider(Provider.OPENAI);
     }
-  }, [availableProviders, selectedProvider, setSelectedProvider]);
+  }, [availableProviders, selectedProvider, setProvider]);
 
   useEffect(() => {
-    // If the current providerFilter is no longer valid for the new capability, reset to All providers
     if (
       providerFilter &&
       !availableProviders.some((p: { id: string }) => p.id === providerFilter)
@@ -69,12 +75,11 @@ export function useModelSelection() {
   useEffect(() => {
     if (!displayedModels.some((m: { id: string }) => m.id === selectedModelValue)) {
       const firstModel = displayedModels[0];
-      // Only select if it's actually a different model
       if (firstModel && firstModel.id !== selectedModelValue) {
-        selectModelFromCatalog(firstModel);
+        selectModel(firstModel);
       }
     }
-  }, [displayedModels, selectedModelValue, setSelectedModel, selectModelFromCatalog]);
+  }, [displayedModels, selectedModelValue, selectModel]);
 
   return {
     models: displayedModels,

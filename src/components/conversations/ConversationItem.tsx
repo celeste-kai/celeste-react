@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import type { Conversation } from "../../types/conversations";
+import type { Conversation } from "../../domain/entities/Conversation";
 import styles from "./ConversationHistory.module.css";
 
 interface ConversationItemProps {
@@ -42,9 +42,9 @@ export function ConversationItem({
       onMouseEnter={onMouseEnter}
     >
       <div className={styles.conversationContent}>
-        <div className={styles.conversationTitle}>{conversation.title}</div>
+        <div className={styles.conversationTitle}>{conversation.getTitle()}</div>
         <div className={styles.conversationMeta}>
-          {formatDate(new Date(conversation.updated_at))}
+          {formatDate(conversation.getUpdatedAt())}
         </div>
       </div>
 

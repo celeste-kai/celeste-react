@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useThreadStore } from "../../stores/thread/store";
-import { useConversations } from "../../hooks/useConversations";
+import { useThreadStore } from "../../stores/thread.store";
+import { useConversation } from "../../hooks/useConversation";
+import { useThread } from "../../hooks/useThread";
 import { ConversationItem } from "./ConversationItem";
-import type { Conversation } from "../../types/conversations";
 import styles from "./ConversationHistory.module.css";
 
 export default function ConversationHistory() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { currentConversationId, loadConversation, clear } = useThreadStore();
-  const { data: conversations = [] } = useConversations();
+  const { conversationId, clear } = useThreadStore();
+  const { conversations, deleteConversation } = useConversation();
+  const { loadThread } = useThread();
 
   const filteredConversations = searchQuery
-    ? conversations.filter((c: Conversation) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    ? conversations.filter((c) =>
+        c.getTitle().toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : conversations;
 
@@ -34,14 +35,14 @@ export default function ConversationHistory() {
       />
 
       <div className={styles.list}>
-        {filteredConversations.map((conversation: Conversation) => (
+        {filteredConversations.map((conversation) => (
           <ConversationItem
-            key={conversation.id}
+            key={conversation.getId()}
             conversation={conversation}
-            isActive={conversation.id === currentConversationId}
+            isActive={conversation.getId() === conversationId}
             isDeleting={false}
-            onSelect={() => loadConversation(conversation.id)}
-            onDelete={() => {}}
+            onSelect={() => loadThread(conversation.getId())}
+            onDelete={() => deleteConversation(conversation.getId())}
             onMouseEnter={() => {}}
           />
         ))}

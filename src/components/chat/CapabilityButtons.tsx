@@ -5,7 +5,7 @@ import videoIcon from "../../assets/icons/video.svg?url";
 import audioIcon from "../../assets/icons/audio.svg?url";
 import styles from "./ChatInput.module.css";
 
-type Capability = "text" | "image" | "video" | "audio";
+import { Capability } from "../../core/enums";
 
 type Props = {
   selected: Capability;
@@ -57,8 +57,8 @@ export default function CapabilityButtons({
     <div className={styles.leftActions}>
       {showText && (
         <CapabilityButton
-          active={selected === "text"}
-          onClick={() => onSelect("text")}
+          active={selected === Capability.TEXT_GENERATION}
+          onClick={() => onSelect(Capability.TEXT_GENERATION)}
           title="Text"
           ariaLabel="Text capability"
         >
@@ -67,8 +67,8 @@ export default function CapabilityButtons({
       )}
       {showImage && (
         <CapabilityButton
-          active={selected === "image"}
-          onClick={() => onSelect("image")}
+          active={selected === Capability.IMAGE_GENERATION}
+          onClick={() => onSelect(Capability.IMAGE_GENERATION)}
           title="Image"
           ariaLabel="Image capability"
         >
@@ -77,8 +77,8 @@ export default function CapabilityButtons({
       )}
       {showVideo && (
         <CapabilityButton
-          active={selected === "video"}
-          onClick={() => onSelect("video")}
+          active={selected === Capability.VIDEO_GENERATION}
+          onClick={() => onSelect(Capability.VIDEO_GENERATION)}
           title="Video"
           ariaLabel="Video capability"
         >
@@ -87,8 +87,8 @@ export default function CapabilityButtons({
       )}
       {showAudio && (
         <CapabilityButton
-          active={selected === "audio"}
-          onClick={() => onSelect("audio")}
+          active={selected === Capability.TEXT_TO_SPEECH}
+          onClick={() => onSelect(Capability.TEXT_TO_SPEECH)}
           title="Audio"
           ariaLabel="Audio capability"
         >

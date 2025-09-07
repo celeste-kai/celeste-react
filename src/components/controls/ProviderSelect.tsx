@@ -1,13 +1,12 @@
 import { SimpleDropdown } from "./SimpleDropdown";
 import ProviderIcon from "../icons/ProviderIcon";
-import type { ProviderOut } from "../../types/api";
 
 export function ProviderSelect({
   providers,
   value,
   onChange,
 }: {
-  providers: ProviderOut[];
+  providers: Array<{ id: string; label: string }>;
   value: string;
   onChange: (next: string | null) => void;
 }) {

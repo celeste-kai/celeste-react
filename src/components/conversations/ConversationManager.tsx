@@ -1,24 +1,25 @@
 import { useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useThreadStore } from "../../stores/thread/store";
+import { useAuth } from "../../lib/auth/context";
+import { useThreadStore } from "../../stores/thread.store";
+import { useThread } from "../../hooks/useThread";
 import ConversationHistory from "./ConversationHistory";
 import { UserProfile } from "./UserProfile";
 import styles from "./ConversationManager.module.css";
 
 export function ConversationManager() {
   const { user } = useAuth();
-  const { currentConversationId, saveCurrentConversation } = useThreadStore();
+  const conversationId = useThreadStore((s) => s.conversationId);
+  const { saveThread } = useThread();
 
-  // Simple auto-save every 30 seconds if there's a conversation
   useEffect(() => {
-    if (!currentConversationId || !user) return;
+    if (!conversationId || !user) return;
 
     const interval = window.setInterval(() => {
-      saveCurrentConversation();
+      saveThread();
     }, 30000);
 
     return () => window.clearInterval(interval);
-  }, [currentConversationId, user, saveCurrentConversation]);
+  }, [conversationId, user, saveThread]);
 
   if (!user) return null;
 
