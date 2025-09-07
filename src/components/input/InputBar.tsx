@@ -1,28 +1,39 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import styles from "../chat/ChatInput.module.css";
 import { ProviderSelect } from "../controls/ProviderSelect";
 import { ModelSelect } from "../controls/ModelSelect";
 import CapabilityButtons from "../chat/CapabilityButtons";
-import { useSelectionsStore } from "../../stores/selections";
-import { useInputContext } from "../../contexts/InputContext";
-import { useImageUploadContext } from "../../contexts/ImageUploadContext";
-import { useModelSelectionContext } from "../../contexts/ModelSelectionContext";
+import { useSelectionStore } from "../../stores/selection.store";
+import { useUIStore } from "../../stores/ui.store";
+import { useThread } from "../../hooks/useThread";
+import { useModelSelection } from "../../hooks/useModelSelection";
+import useImageUpload from "../../hooks/useImageUpload";
+import { Capability } from "../../core/enums";
 
 export default function InputBar() {
-  const selectModelFromCatalog = useSelectionsStore((s) => s.selectModelFromCatalog);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [inputValue, setInputValue] = useState("");
 
-  // Get values from contexts
+  const capability = useSelectionStore((s) => s.capability);
+  const selectedModelValue = useSelectionStore((s) => s.model);
+  const providerFilter = useSelectionStore((s) => s.providerFilter);
+  const selectModel = useSelectionStore((s) => s.selectModel);
+  const setCapability = useSelectionStore((s) => s.setCapability);
+  const setProviderFilter = useSelectionStore((s) => s.setProviderFilter);
+
+  const setImageMode = useUIStore((s) => s.setImageMode);
+
+  const { sendMessage } = useThread();
+
   const {
-    inputValue,
-    handleInputChange,
-    handleKeyPress,
-    handleSend,
-    selectedCapability,
-    setSelectedCapability,
-    imageMode: _imageMode,
-    setImageMode,
-  } = useInputContext();
+    models,
+    providers,
+    isLoadingModels,
+    showText,
+    showImage,
+    showVideo,
+    showAudio,
+  } = useModelSelection();
 
   const {
     uploadedImage,
@@ -33,41 +44,38 @@ export default function InputBar() {
     onDrop,
     onDragOver,
     onDragLeave,
-  } = useImageUploadContext();
+  } = useImageUpload(
+    capability === Capability.IMAGE_GENERATION || capability === Capability.VIDEO_GENERATION
+  );
 
-  const {
-    models,
-    providers,
-    isLoadingModels,
-    showText,
-    showImage,
-    showVideo,
-    showAudio,
-    selectedModelValue,
-    providerFilter,
-    setProviderFilter,
-  } = useModelSelectionContext();
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+  }, []);
+
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(inputValue, uploadedImage || undefined);
+        setInputValue("");
+        clearImage();
+      }
+    },
+    [inputValue, uploadedImage, sendMessage, clearImage]
+  );
+
+  const handleSend = useCallback(() => {
+    sendMessage(inputValue, uploadedImage || undefined);
+    setInputValue("");
+    clearImage();
+  }, [inputValue, uploadedImage, sendMessage, clearImage]);
 
   useEffect(() => {
-    if (selectedCapability === "image") {
+    if (capability === Capability.IMAGE_GENERATION) {
       setImageMode(uploadedImage ? "edit" : "generate");
     }
-  }, [uploadedImage, selectedCapability, setImageMode]);
+  }, [uploadedImage, capability, setImageMode]);
 
-  const placeholder = (() => {
-    if (selectedCapability === "image" && uploadedImage) {
-      return "Describe how you want to edit this image...";
-    }
-    if (selectedCapability === "video" && uploadedImage) {
-      return "Describe the video you want to create from this image...";
-    }
-    if (selectedCapability === "audio") {
-      return "Enter text to convert to speech...";
-    }
-    return "Type a message...";
-  })();
-
-  // Auto-resize textarea based on content
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -77,6 +85,19 @@ export default function InputBar() {
       textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
     }
   }, [inputValue]);
+
+  const placeholder = (() => {
+    if (capability === Capability.IMAGE_GENERATION && uploadedImage) {
+      return "Describe how you want to edit this image...";
+    }
+    if (capability === Capability.VIDEO_GENERATION && uploadedImage) {
+      return "Describe the video you want to create from this image...";
+    }
+    if (capability === Capability.TEXT_TO_SPEECH) {
+      return "Enter text to convert to speech...";
+    }
+    return "Type a message...";
+  })();
 
   return (
     <div className={styles.wrapper}>
@@ -111,14 +132,14 @@ export default function InputBar() {
         <div className={styles.actionsRow}>
           <div className={styles.leftActions}>
             <CapabilityButtons
-              selected={selectedCapability}
-              onSelect={setSelectedCapability}
+              selected={capability}
+              onSelect={setCapability}
               showText={showText}
               showImage={showImage}
               showVideo={showVideo}
               showAudio={showAudio}
             />
-            {(selectedCapability === "image" || selectedCapability === "video") && (
+            {(capability === Capability.IMAGE_GENERATION || capability === Capability.VIDEO_GENERATION) && (
               <>
                 <input
                   ref={fileInputRef}
@@ -142,14 +163,14 @@ export default function InputBar() {
           <div className={styles.rightActions}>
             <ProviderSelect
               providers={providers}
-              value={providerFilter || ""}
-              onChange={setProviderFilter}
+              value={providerFilter?.toString() || ""}
+              onChange={(prov) => setProviderFilter(prov as any)}
             />
             <ModelSelect
               models={models}
               value={selectedModelValue || ""}
               isLoading={isLoadingModels}
-              onSelect={selectModelFromCatalog}
+              onSelect={selectModel}
             />
             <button
               className={styles.sendBtn}

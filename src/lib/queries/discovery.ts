@@ -4,8 +4,7 @@ import {
   listCapabilities,
   listProviders,
   listModels,
-} from "../../services/discovery";
-import type { ModelFilters } from "../../types/api";
+} from "../../infrastructure/api";
 
 // Query keys factory for better organization
 export const discoveryKeys = {
@@ -13,8 +12,8 @@ export const discoveryKeys = {
   health: () => [...discoveryKeys.all, "health"] as const,
   capabilities: () => [...discoveryKeys.all, "capabilities"] as const,
   providers: () => [...discoveryKeys.all, "providers"] as const,
-  models: (filters?: ModelFilters) =>
-    [...discoveryKeys.all, "models", filters] as const,
+  models: (capability?: string, provider?: string) =>
+    [...discoveryKeys.all, "models", { capability, provider }] as const,
 };
 
 // Health check query
@@ -51,10 +50,10 @@ export function useProviders() {
 }
 
 // Models query with optional filters
-export function useModels(filters?: ModelFilters) {
+export function useModels(capability?: string, provider?: string) {
   return useQuery({
-    queryKey: discoveryKeys.models(filters),
-    queryFn: () => listModels(filters),
+    queryKey: discoveryKeys.models(capability, provider),
+    queryFn: () => listModels(capability, provider),
     // Keep previous data visible while fetching next set to avoid flicker/loading
     placeholderData: keepPreviousData,
     // Models can change more frequently than capabilities/providers

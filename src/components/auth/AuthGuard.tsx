@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../lib/auth/context";
 import AuthScreen from "./AuthScreen";
 
 export default function AuthGuard({ children }: { children: ReactNode }) {

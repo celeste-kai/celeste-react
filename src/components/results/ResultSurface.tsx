@@ -1,17 +1,27 @@
 import Greeting from "../chat/Greeting";
-import { useThreadStore } from "../../stores/thread/store";
+import { useThreadStore } from "../../stores/thread.store";
 import ThreadItemView from "./ThreadItemView";
 import styles from "./ResultSurface.module.css";
 
 export default function ResultSurface() {
-  const items = useThreadStore((s) => s.items);
+  const thread = useThreadStore((s) => s.thread);
+  const messages = thread?.getMessages() || [];
 
   return (
     <div className={styles.container}>
-      {!items || items.length === 0 ? (
+      {messages.length === 0 ? (
         <Greeting name="Kamil" />
       ) : (
-        items.map((it) => <ThreadItemView key={it.id} item={it} />)
+        messages.map((msg) => (
+          <ThreadItemView
+            key={msg.getId()}
+            item={{
+              id: msg.getId(),
+              role: msg.role,
+              parts: msg.getParts()
+            }}
+          />
+        ))
       )}
     </div>
   );

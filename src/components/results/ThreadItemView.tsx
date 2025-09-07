@@ -4,59 +4,44 @@ import remarkGfm from "remark-gfm";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import ImagePart from "./parts/ImagePart";
-import type { ContentPart, ThreadItem, Role } from "../../domain/thread";
+import type { ContentPart, Role } from "../../domain/types";
+
+interface ThreadItem {
+  id: string;
+  role: Role;
+  parts: ContentPart[];
+}
 
 function PartView({ part, role }: { part: ContentPart; role: Role }) {
-  if (part.kind === "text") {
-    return <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>;
+  switch (part.kind) {
+    case "text":
+      return <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>;
+    case "image":
+      return <ImagePart {...part} role={role} />;
+    case "video":
+      return part.url || part.path ? (
+        <video src={part.url || part.path} controls playsInline style={{ maxWidth: "100%" }} />
+      ) : null;
+    case "audio":
+      return part.url ? <AudioPlayer src={part.url} showJumpControls={false} /> : null;
+    default:
+      return null;
   }
-  if (part.kind === "image") {
-    return <ImagePart {...part} role={role} />;
-  }
-  if (part.kind === "video") {
-    const src = part.url || part.path;
-    return src ? (
-      <video src={src} controls playsInline style={{ maxWidth: "100%" }} />
-    ) : null;
-  }
-  if (part.kind === "audio") {
-    return part.data ? (
-      <AudioPlayer
-        src={part.data}
-        showJumpControls={false}
-        showDownloadProgress={false}
-        showFilledProgress={true}
-        autoPlayAfterSrcChange={false}
-        customAdditionalControls={[]}
-        layout="horizontal-reverse"
-      />
-    ) : null;
-  }
-  return null;
 }
 
 export default function ThreadItemView({ item }: { item: ThreadItem }) {
-  const sideClass = item.role === "user" ? styles.user : styles.assistant;
-  const cardClass =
-    item.role === "user" ? `${styles.card} ${styles.userCard}` : styles.card;
-  const showAvatar = item.role !== "user";
-  const firstPart = item.parts && item.parts.length > 0 ? item.parts[0] : undefined;
-  const isPendingDraft =
-    item.role === "assistant" &&
-    firstPart &&
-    (firstPart as ContentPart).kind === "text" &&
-    !(firstPart as any).content;
+  const isPending = item.role === "assistant" &&
+    item.parts[0]?.kind === "text" &&
+    !item.parts[0].content;
+
   return (
-    <div
-      className={`${styles.item} ${sideClass}`}
-      aria-live={isPendingDraft ? "polite" : undefined}
-    >
-      {showAvatar && (
-        <div className={styles.avatar} aria-hidden>
-          <span className={isPendingDraft ? styles.spin : undefined}>✴</span>
+    <div className={`${styles.item} ${styles[item.role]}`}>
+      {item.role === "assistant" && (
+        <div className={styles.avatar}>
+          <span className={isPending ? styles.spin : undefined}>✴</span>
         </div>
       )}
-      <div className={cardClass}>
+      <div className={`${styles.card} ${item.role === "user" ? styles.userCard : ""}`}>
         <div className={styles.text}>
           {item.parts.map((p, idx) => (
             <div key={idx}>
