@@ -115,6 +115,7 @@ export function useThread() {
 
     if (activeConversationId) {
       await repository.saveThread(currentThread, activeConversationId);
+      setThread(currentThread.clone());
     }
   };
 
