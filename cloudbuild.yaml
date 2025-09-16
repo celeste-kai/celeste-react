@@ -5,6 +5,7 @@ substitutions:
   _REPOSITORY: web-apps
   _SERVICE: celeste-react
   _IMAGE: celeste-react
+  _TAG: latest
 steps:
   - name: node:20
     id: Install dependencies
@@ -49,7 +50,7 @@ steps:
       - build
       - --push
       - --tag
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:${_TAG}
       - .
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     id: Deploy to Cloud Run
@@ -58,7 +59,7 @@ steps:
       - run
       - deploy
       - ${_SERVICE}
-      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:${COMMIT_SHA:-latest}
       - --region=${_REGION}
       - --min-instances=0
       - --max-instances=3
@@ -66,4 +67,4 @@ steps:
       - --cpu=1
       - --platform=managed
 images:
-  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:${_TAG}

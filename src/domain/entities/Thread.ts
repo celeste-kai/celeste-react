@@ -6,6 +6,7 @@ import type { Provider, Capability } from "../../core/enums";
 export class Thread {
   private messages: Message[] = [];
   private changes: Change<Message>[] = [];
+  private messageIndex = 0;
 
   constructor(
     private readonly id: ThreadId
@@ -30,7 +31,7 @@ export class Thread {
     content: MessageContent,
     role: Role
   ): Message {
-    const message = Message.create(provider, capability, model, content, role);
+    const message = Message.create(provider, capability, model, content, role, this.messageIndex++);
     this.messages.push(message);
     this.changes.push({
       type: "add",
@@ -42,6 +43,10 @@ export class Thread {
 
   addExistingMessage(message: Message): void {
     this.messages.push(message);
+    // Update messageIndex to continue from the highest existing index
+    if (message.orderIndex >= this.messageIndex) {
+      this.messageIndex = message.orderIndex + 1;
+    }
   }
 
   updateMessage(messageId: string, parts: ContentPart[]): void {
@@ -90,15 +95,12 @@ export class Thread {
     const cloned = new Thread(this.id);
     cloned.messages = [...this.messages];
     cloned.changes = [...this.changes];
+    cloned.messageIndex = this.messageIndex;
     return cloned;
   }
 
   getMessages(): Message[] {
     return [...this.messages];
-  }
-
-  getLastMessage(): Message | undefined {
-    return this.messages[this.messages.length - 1];
   }
 
   getChanges(): Change<Message>[] {
