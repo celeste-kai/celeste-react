@@ -3,11 +3,21 @@ import { repository } from "../infrastructure/repository";
 import { Conversation } from "../domain/entities/Conversation";
 import { useThreadStore } from "../stores/thread.store";
 
+type LoadConversationsHandler = () => Promise<void>;
+
+let loadConversationsHandler: LoadConversationsHandler | null = null;
+
+export const loadConversations = async () => {
+  if (loadConversationsHandler) {
+    await loadConversationsHandler();
+  }
+};
+
 export function useConversation() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const { conversationId, setConversationId } = useThreadStore();
 
-  const loadConversations = useCallback(async () => {
+  const loadConversationsCallback = useCallback(async () => {
     const loaded = await repository.loadConversations();
     setConversations(loaded);
   }, []);
@@ -17,10 +27,10 @@ export function useConversation() {
       const conversation = Conversation.create(title);
       await repository.saveConversation(conversation);
       setConversationId(conversation.getId());
-      await loadConversations();
+      await loadConversationsCallback();
       return conversation;
     },
-    [loadConversations, setConversationId]
+    [loadConversationsCallback, setConversationId]
   );
 
   const deleteConversation = useCallback(
@@ -30,20 +40,27 @@ export function useConversation() {
       if (currentConversationId === id) {
         setConversationId(null);
       }
-      await loadConversations();
+      await loadConversationsCallback();
     },
-    [loadConversations, setConversationId]
+    [loadConversationsCallback, setConversationId]
   );
 
   useEffect(() => {
-    loadConversations();
-  }, [loadConversations]);
+    loadConversationsHandler = loadConversationsCallback;
+    loadConversationsCallback();
+
+    return () => {
+      if (loadConversationsHandler === loadConversationsCallback) {
+        loadConversationsHandler = null;
+      }
+    };
+  }, [loadConversationsCallback]);
 
   return {
     conversations,
     conversationId,
     createConversation,
     deleteConversation,
-    loadConversations
+    loadConversations: loadConversationsCallback
   };
 }
