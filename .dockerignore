@@ -5,3 +5,10 @@ npm-cache
 bower_components
 dist
 .git
+.env*
+!.env.example
+*.log
+.DS_Store
+coverage
+.vscode
+.idea
