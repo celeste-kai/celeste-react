@@ -1,0 +1,69 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _REGION: us-central1
+  _REPOSITORY: web-apps
+  _SERVICE: celeste-react
+  _IMAGE: celeste-react
+steps:
+  - name: node:20
+    id: Install dependencies
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        corepack enable
+        pnpm config set store-dir /root/.pnpm-store
+        pnpm install --frozen-lockfile
+    volumes:
+      - name: pnpm-cache
+        path: /root/.pnpm-store
+  - name: node:20
+    id: Lint and type-check
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        corepack enable
+        pnpm config set store-dir /root/.pnpm-store
+        pnpm run check
+    volumes:
+      - name: pnpm-cache
+        path: /root/.pnpm-store
+  - name: node:20
+    id: Build application
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        corepack enable
+        pnpm config set store-dir /root/.pnpm-store
+        pnpm build
+    volumes:
+      - name: pnpm-cache
+        path: /root/.pnpm-store
+  - name: gcr.io/cloud-builders/docker
+    id: Build and push image
+    args:
+      - buildx
+      - build
+      - --push
+      - --tag
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+      - .
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: Deploy to Cloud Run
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
+      - --region=${_REGION}
+      - --min-instances=0
+      - --max-instances=3
+      - --memory=512Mi
+      - --cpu=1
+      - --platform=managed
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$COMMIT_SHA
