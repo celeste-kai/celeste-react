@@ -7,6 +7,7 @@ import { Capability } from "../core/enums";
 import type { MessageContent } from "../domain/types";
 import type { ImageArtifact } from "../core/types";
 import { Conversation } from "../domain/entities/Conversation";
+import { useConversationStore } from "../stores/conversation.store";
 
 export function useThread() {
   const { thread, conversationId, setThread, setConversationId } = useThreadStore();
@@ -58,6 +59,7 @@ export function useThread() {
       await repository.saveConversation(conversation);
       activeConversationId = conversation.getId();
       setConversationId(activeConversationId);
+      await useConversationStore.getState().refresh();
     }
 
     const userContent: MessageContent = {

@@ -1,26 +1,25 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { repository } from "../infrastructure/repository";
 import { Conversation } from "../domain/entities/Conversation";
 import { useThreadStore } from "../stores/thread.store";
+import { useConversationStore } from "../stores/conversation.store";
 
 export function useConversation() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const conversations = useConversationStore((state) => state.conversations);
+  const refreshConversations = useConversationStore((state) => state.refresh);
   const { conversationId, setConversationId } = useThreadStore();
 
-  const loadConversations = useCallback(async () => {
-    const loaded = await repository.loadConversations();
-    setConversations(loaded);
-  }, []);
+  const loadConversations = useCallback(() => refreshConversations(), [refreshConversations]);
 
   const createConversation = useCallback(
     async (title: string) => {
       const conversation = Conversation.create(title);
       await repository.saveConversation(conversation);
       setConversationId(conversation.getId());
-      await loadConversations();
+      await refreshConversations();
       return conversation;
     },
-    [loadConversations, setConversationId]
+    [refreshConversations, setConversationId]
   );
 
   const deleteConversation = useCallback(
@@ -30,9 +29,9 @@ export function useConversation() {
       if (currentConversationId === id) {
         setConversationId(null);
       }
-      await loadConversations();
+      await refreshConversations();
     },
-    [loadConversations, setConversationId]
+    [refreshConversations, setConversationId]
   );
 
   useEffect(() => {
