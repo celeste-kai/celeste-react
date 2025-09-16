@@ -35,27 +35,17 @@ A comprehensive React interface that brings together all Celeste AI capabilities
 
 ```bash
 # 1) Install dependencies
-npm install
+pnpm install
 
 # 2) Configure environment (optional)
 cp .env.example .env
 
 # 3) Start development server
-npm start
+pnpm start
 
 # Open your browser:
 # http://localhost:5173
 ```
-
-<details>
-<summary><b>Using pnpm (Alternative)</b></summary>
-
-```bash
-pnpm install
-pnpm start
-```
-
-</details>
 
 <details>
 <summary><b>Using yarn (Alternative)</b></summary>
@@ -147,7 +137,7 @@ VITE_API_BASE_URL=http://localhost:8000  # Celeste API base URL
 ### Build for Production
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Builds the app to the `dist` folder, optimized for production.
@@ -155,20 +145,20 @@ Builds the app to the `dist` folder, optimized for production.
 ### Run Tests
 
 ```bash
-npm test
+pnpm test
 ```
 
 ### Lint & Format
 
 ```bash
-npm run lint
-npm run format
+pnpm lint
+pnpm format
 ```
 
 ### Type Check
 
 ```bash
-npm run type-check
+pnpm type-check
 ```
 
 ## 🏗️ Project Structure

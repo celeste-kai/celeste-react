@@ -36,10 +36,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "lint": "npm run type-check && eslint 'src/**/*.{ts,tsx,js,jsx}' --max-warnings=0",
+    "lint": "pnpm run type-check && eslint 'src/**/*.{ts,tsx,js,jsx}' --max-warnings=0",
     "lint:fix": "eslint 'src/**/*.{ts,tsx,js,jsx}' --max-warnings=0 --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run type-check && npm run lint && npm run format:check"
+    "check": "pnpm run type-check && pnpm run lint && pnpm run format:check"
   }
 }
