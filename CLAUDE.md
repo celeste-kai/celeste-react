@@ -35,20 +35,20 @@ Celeste React is the frontend interface for the Celeste multi-modal AI framework
 
 ```bash
 # Development server
-npm start
-npm run dev
+pnpm start
+pnpm dev
 
 # Build for production
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 
 # Code quality
-npm run check          # Run all checks (type-check + lint + format:check)
-npm run type-check     # TypeScript checking only
-npm run lint           # TypeScript + ESLint
-npm run lint:fix       # Fix linting issues
-npm run format         # Format with Prettier
-npm run format:check   # Check formatting
+pnpm check          # Run all checks (type-check + lint + format:check)
+pnpm type-check     # TypeScript checking only
+pnpm lint           # TypeScript + ESLint
+pnpm lint:fix       # Fix linting issues
+pnpm format         # Format with Prettier
+pnpm format:check   # Check formatting
 ```
 
 ## Key Development Notes
