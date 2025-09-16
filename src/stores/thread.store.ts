@@ -5,7 +5,7 @@ interface ThreadState {
   thread: Thread | null;
   conversationId: string | null;
   setThread: (thread: Thread) => void;
-  setConversationId: (id: string) => void;
+  setConversationId: (id: string | null) => void;
   clear: () => void;
 }
 

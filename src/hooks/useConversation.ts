@@ -28,7 +28,7 @@ export function useConversation() {
       await repository.deleteConversation(id);
       const { conversationId: currentConversationId } = useThreadStore.getState();
       if (currentConversationId === id) {
-        setConversationId("");
+        setConversationId(null);
       }
       await loadConversations();
     },
