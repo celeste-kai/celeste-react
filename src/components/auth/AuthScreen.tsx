@@ -28,17 +28,11 @@ export default function AuthScreen() {
       <div className={styles.authContainer}>
         <div className={styles.authHeader}>
           <div className={styles.logo}>
-            <img
-              src="/celeste.svg"
-              alt="Celeste"
-              className={styles.logoIcon}
-            />
+            <img src="/celeste.svg" alt="Celeste" className={styles.logoIcon} />
             <h1>Celeste</h1>
           </div>
           <h2>Multi-modal AI Assistant</h2>
-          <p>
-            Sign in to access text generation, image creation, and video production
-          </p>
+          <p>Sign in to access text generation, image creation, and video production</p>
         </div>
 
         <div className={styles.authContent}>
@@ -105,7 +99,9 @@ export default function AuthScreen() {
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
             >
-              {isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
+              {isSignUp
+                ? "Already have an account? Sign in"
+                : "Need an account? Sign up"}
             </button>
           </div>
 

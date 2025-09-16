@@ -30,7 +30,11 @@
 
 .player :global(.rhap_progress-filled),
 .player :global(.rhap_progress-indicator) {
-  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2)) !important;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent),
+    var(--color-accent-2)
+  ) !important;
 }
 
 .player :global(.rhap_progress-indicator) {

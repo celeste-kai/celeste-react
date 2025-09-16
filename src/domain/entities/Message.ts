@@ -11,7 +11,7 @@ export class Message {
     private content: MessageContent,
     readonly role: Role,
     readonly createdAt: number,
-    readonly orderIndex: number
+    readonly orderIndex: number,
   ) {}
 
   static create(
@@ -20,7 +20,7 @@ export class Message {
     model: string,
     content: MessageContent,
     role: Role,
-    orderIndex: number
+    orderIndex: number,
   ): Message {
     return new Message(
       Id.generate("message"),
@@ -30,7 +30,7 @@ export class Message {
       content,
       role,
       Date.now(),
-      orderIndex
+      orderIndex,
     );
   }
 
@@ -52,7 +52,7 @@ export class Message {
       data.content,
       data.role,
       data.createdAt,
-      data.orderIndex
+      data.orderIndex,
     );
   }
 
@@ -65,7 +65,7 @@ export class Message {
   }
 
   appendText(text: string): void {
-    const textPart = this.content.parts.find(p => p.kind === "text");
+    const textPart = this.content.parts.find((p) => p.kind === "text");
     if (textPart && textPart.kind === "text") {
       textPart.content += text;
     } else {
@@ -75,9 +75,11 @@ export class Message {
 
   appendParts(newParts: ContentPart[]): void {
     // Remove empty text placeholder if it exists
-    if (this.content.parts.length === 1 &&
-        this.content.parts[0].kind === "text" &&
-        !this.content.parts[0].content) {
+    if (
+      this.content.parts.length === 1 &&
+      this.content.parts[0].kind === "text" &&
+      !this.content.parts[0].content
+    ) {
       this.content.parts = newParts;
     } else {
       this.content.parts.push(...newParts);

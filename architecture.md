@@ -9,6 +9,7 @@
 ## Why LESS Code:
 
 ### 1. Eliminate Duplication (-300 LOC)
+
 ```typescript
 // CURRENT: Logic duplicated across components
 // InputBar.tsx: 185 lines with mixed concerns
@@ -17,19 +18,18 @@
 
 // AFTER: Single source of truth
 class MessageService {
-  validate(content: string): Result<Message>
-  send(message: Message): Promise<void>
+  validate(content: string): Result<Message>;
+  send(message: Message): Promise<void>;
 }
 // Components just call: messageService.send()
 ```
 
 ### 2. Remove Boilerplate (-200 LOC)
+
 ```typescript
 // CURRENT: Manual state updates everywhere
 setState((s) => ({
-  items: s.items.map((item) =>
-    item.id === id ? { ...item, parts } : item
-  ),
+  items: s.items.map((item) => (item.id === id ? { ...item, parts } : item)),
 }));
 
 // AFTER: Domain handles it
@@ -37,6 +37,7 @@ thread.updateMessage(id, parts);
 ```
 
 ### 3. Consolidate Business Logic (-150 LOC)
+
 ```typescript
 // CURRENT: Store with 141 lines doing everything
 // AFTER: Split but shared logic extracted
@@ -48,6 +49,7 @@ class Thread {
 ```
 
 ### 4. Simplify Data Flow (-150 LOC)
+
 ```typescript
 // CURRENT: Complex prop drilling and state management
 // AFTER: Clean dependency injection
@@ -55,6 +57,7 @@ const thread = useThread(); // That's it
 ```
 
 ### 5. Delete Redundant Code (-100 LOC)
+
 - Remove `threadService.save()` delete-all pattern
 - Remove manual type conversions
 - Remove duplicate validation
@@ -63,20 +66,22 @@ const thread = useThread(); // That's it
 ## What Gets Added:
 
 ### Domain Models (+200 LOC)
+
 ```typescript
 // Rich behavior, but replaces scattered logic
 class Thread {
-  addMessage(): Message
-  canAddMessage(): boolean
-  validate(): ValidationResult
+  addMessage(): Message;
+  canAddMessage(): boolean;
+  validate(): ValidationResult;
 }
 ```
 
 ### Interfaces/Ports (+100 LOC)
+
 ```typescript
 // But enables testing and swapping implementations
 interface IMessageRepository {
-  save(message: Message): Promise<void>
+  save(message: Message): Promise<void>;
 }
 ```
 
@@ -92,6 +97,7 @@ interface IMessageRepository {
 ## Real Example:
 
 ### Current `threadService.save()`: 56 lines
+
 ```typescript
 async save() {
   const { items, conversationId } = useStore.getState();
@@ -106,6 +112,7 @@ async save() {
 ```
 
 ### After: 15 lines
+
 ```typescript
 async save(thread: Thread) {
   const changes = thread.getChanges();
@@ -125,6 +132,7 @@ async save(thread: Thread) {
 ## The Bottom Line:
 
 **-676 lines (-24%)** by:
+
 - Eliminating duplication
 - Extracting shared logic
 - Removing boilerplate
@@ -132,6 +140,7 @@ async save(thread: Thread) {
 - Using proper patterns
 
 **Plus these benefits:**
+
 - 100% testable
 - Easier to modify
 - Faster to develop new features
@@ -147,11 +156,13 @@ Clean architecture isn't about more code - it's about the RIGHT code in the RIGH
 The backend (`celeste-core`) has a well-organized type system we should mirror:
 
 ### Backend Structure
+
 - **Enums**: `Provider` (openai, anthropic, etc.), `Capability` (bitwise flags)
 - **Types**: `AIResponse<T>`, `ImageArtifact`, `VideoArtifact`, `AudioArtifact`
 - **Models**: `Model` class with provider, capabilities, display name
 
 ### Frontend Structure (Aligned)
+
 ```
 src/
 ├── core/                      # Mirror backend types
@@ -174,6 +185,7 @@ src/
 ```
 
 ### Benefits
+
 - **Type safety across stack** - Backend/frontend speak same language
 - **No translation needed** - API responses map directly
 - **Less code** - No conversion functions
@@ -181,33 +193,39 @@ src/
 ## Implementation Steps
 
 ### Phase 1: Core Types Setup
+
 - [x] Create `src/core/` directory structure
 - [x] Mirror backend enums (Provider, Capability)
 - [x] Create type definitions matching backend
 - [x] Add Model interface with capability checking
 
 ### Phase 2: Domain Layer
+
 - [x] Create Thread aggregate using core types
 - [x] Implement Message entity with core types
 - [x] Build Conversation entity
 - [x] Define repository interfaces
 
 ### Phase 3: Infrastructure
+
 - [x] Create API client using core types
 - [x] Implement SupabaseRepository with batch updates
 - [x] Remove type conversions
 
 ### Phase 4: State Management
+
 - [x] Split monolithic store into domain stores
 - [x] Remove direct store imports from services
 - [x] Implement proper data flow
 
 ### Phase 5: Component Simplification
+
 - [x] Remove business logic from InputBar (185 → 189 lines, but cleaner)
 - [x] Clean up ConversationHistory
 - [x] Make components presentation-only
 
 ### Phase 6: Optimize Operations
+
 - [x] Replace delete-all pattern with diff
 - [x] Implement change tracking
 - [x] Add optimistic updates
@@ -215,6 +233,7 @@ src/
 ## Migration Complete!
 
 ### Final Results
+
 - **Initial**: 2,876 lines, ~60 files
 - **After refactoring**: 3,119 lines (temporary increase)
 - **After cleanup**: 2,462 lines, 52 files
@@ -222,6 +241,7 @@ src/
 - **Files removed**: 8 files
 
 ### What We Achieved
+
 - Eliminated delete-all pattern with batch operations
 - Clean domain layer with business logic
 - Type-safe infrastructure using core types

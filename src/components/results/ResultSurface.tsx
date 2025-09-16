@@ -18,7 +18,7 @@ export default function ResultSurface() {
             item={{
               id: msg.getId(),
               role: msg.role,
-              parts: msg.getParts()
+              parts: msg.getParts(),
             }}
           />
         ))

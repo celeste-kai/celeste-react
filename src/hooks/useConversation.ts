@@ -9,7 +9,10 @@ export function useConversation() {
   const refreshConversations = useConversationStore((state) => state.refresh);
   const { conversationId, setConversationId } = useThreadStore();
 
-  const loadConversations = useCallback(() => refreshConversations(), [refreshConversations]);
+  const loadConversations = useCallback(
+    () => refreshConversations(),
+    [refreshConversations],
+  );
 
   const createConversation = useCallback(
     async (title: string) => {
@@ -19,7 +22,7 @@ export function useConversation() {
       await refreshConversations();
       return conversation;
     },
-    [refreshConversations, setConversationId]
+    [refreshConversations, setConversationId],
   );
 
   const deleteConversation = useCallback(
@@ -31,7 +34,7 @@ export function useConversation() {
       }
       await refreshConversations();
     },
-    [refreshConversations, setConversationId]
+    [refreshConversations, setConversationId],
   );
 
   useEffect(() => {
@@ -43,6 +46,6 @@ export function useConversation() {
     conversationId,
     createConversation,
     deleteConversation,
-    loadConversations
+    loadConversations,
   };
 }

@@ -8,9 +8,7 @@ export class Thread {
   private changes: Change<Message>[] = [];
   private messageIndex = 0;
 
-  constructor(
-    private readonly id: ThreadId
-  ) {}
+  constructor(private readonly id: ThreadId) {}
 
   static create(): Thread {
     return new Thread(Id.generate("thread"));
@@ -29,14 +27,21 @@ export class Thread {
     capability: Capability,
     model: string,
     content: MessageContent,
-    role: Role
+    role: Role,
   ): Message {
-    const message = Message.create(provider, capability, model, content, role, this.messageIndex++);
+    const message = Message.create(
+      provider,
+      capability,
+      model,
+      content,
+      role,
+      this.messageIndex++,
+    );
     this.messages.push(message);
     this.changes.push({
       type: "add",
       entity: message,
-      id: message.getId()
+      id: message.getId(),
     });
     return message;
   }
@@ -50,43 +55,43 @@ export class Thread {
   }
 
   updateMessage(messageId: string, parts: ContentPart[]): void {
-    const message = this.messages.find(m => m.getId() === messageId);
+    const message = this.messages.find((m) => m.getId() === messageId);
     if (message) {
       message.updateContent(parts);
       this.changes.push({
         type: "update",
         entity: message,
-        id: message.getId()
+        id: message.getId(),
       });
     }
   }
 
   appendPartsToMessage(messageId: string, parts: ContentPart[]): void {
-    const message = this.messages.find(m => m.getId() === messageId);
+    const message = this.messages.find((m) => m.getId() === messageId);
     if (!message) return;
 
     message.appendParts(parts);
 
-    if (!this.changes.find(c => c.id === messageId)) {
+    if (!this.changes.find((c) => c.id === messageId)) {
       this.changes.push({
         type: "update",
         entity: message,
-        id: messageId
+        id: messageId,
       });
     }
   }
 
   appendTextToMessage(messageId: string, text: string): void {
-    const message = this.messages.find(m => m.getId() === messageId);
+    const message = this.messages.find((m) => m.getId() === messageId);
     if (!message) return;
 
     message.appendText(text);
 
-    if (!this.changes.find(c => c.id === messageId)) {
+    if (!this.changes.find((c) => c.id === messageId)) {
       this.changes.push({
         type: "update",
         entity: message,
-        id: messageId
+        id: messageId,
       });
     }
   }

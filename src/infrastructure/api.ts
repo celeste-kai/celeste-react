@@ -7,16 +7,16 @@ export async function* streamText(
   provider: Provider,
   model: string,
   prompt: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): AsyncGenerator<string> {
   const res = await fetch(`${BASE_URL}/v1/text/stream`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/x-ndjson"
+      Accept: "application/x-ndjson",
     },
     body: JSON.stringify({ provider, model, prompt }),
-    signal
+    signal,
   });
 
   const reader = res.body!.pipeThrough(new TextDecoderStream()).getReader();
@@ -42,12 +42,12 @@ export async function* streamText(
 export async function generateImages(
   provider: Provider,
   model: string,
-  prompt: string
+  prompt: string,
 ): Promise<ImageArtifact[]> {
   const res = await fetch(`${BASE_URL}/v1/images/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ provider, model, prompt })
+    body: JSON.stringify({ provider, model, prompt }),
   });
   const data = await res.json();
   return data.images;
@@ -57,12 +57,12 @@ export async function editImage(
   provider: Provider,
   model: string,
   prompt: string,
-  image: string
+  image: string,
 ): Promise<ImageArtifact> {
   const res = await fetch(`${BASE_URL}/v1/images/edit`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ provider, model, prompt, image })
+    body: JSON.stringify({ provider, model, prompt, image }),
   });
   const data = await res.json();
   return data.image;
@@ -72,36 +72,38 @@ export async function generateVideo(
   provider: Provider,
   model: string,
   prompt: string,
-  image?: string
+  image?: string,
 ): Promise<VideoArtifact[]> {
   const res = await fetch(`${BASE_URL}/v1/video/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ provider, model, prompt, image })
+    body: JSON.stringify({ provider, model, prompt, image }),
   });
   const data = await res.json();
   return data.videos.map((v: any) => ({
     ...v,
-    path: v.url?.startsWith('/v1/') ? `${BASE_URL}${v.url}` : (v.url || v.path),
-    url: undefined
+    path: v.url?.startsWith("/v1/") ? `${BASE_URL}${v.url}` : v.url || v.path,
+    url: undefined,
   }));
 }
 
 export async function generateAudio(
   provider: Provider,
   model: string,
-  text: string
+  text: string,
 ): Promise<AudioArtifact> {
   const res = await fetch(`${BASE_URL}/v1/audio/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ provider, model, text })
+    body: JSON.stringify({ provider, model, text }),
   });
   const data = await res.json();
   return {
     ...data.audio,
-    path: data.audio.url?.startsWith('/v1/') ? `${BASE_URL}${data.audio.url}` : (data.audio.url || data.audio.path),
-    url: undefined
+    path: data.audio.url?.startsWith("/v1/")
+      ? `${BASE_URL}${data.audio.url}`
+      : data.audio.url || data.audio.path,
+    url: undefined,
   };
 }
 

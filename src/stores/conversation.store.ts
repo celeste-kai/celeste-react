@@ -15,5 +15,5 @@ export const useConversationStore = create<ConversationState>((set) => ({
     const conversations = await repository.loadConversations();
     set({ conversations });
     return conversations;
-  }
+  },
 }));

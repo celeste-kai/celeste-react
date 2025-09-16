@@ -9,7 +9,8 @@ interface ThreadItem {
 }
 
 export default function ThreadItemView({ item }: { item: ThreadItem }) {
-  const isPending = item.role === "assistant" &&
+  const isPending =
+    item.role === "assistant" &&
     item.parts[0]?.kind === "text" &&
     !item.parts[0].content;
 
@@ -21,7 +22,9 @@ export default function ThreadItemView({ item }: { item: ThreadItem }) {
         </div>
       )}
       <div className={`${styles.card} ${item.role === "user" ? styles.userCard : ""}`}>
-        <div className={`${styles.parts} ${item.role === "user" ? styles.userParts : styles.assistantParts}`}>
+        <div
+          className={`${styles.parts} ${item.role === "user" ? styles.userParts : styles.assistantParts}`}
+        >
           {item.parts.map((p, idx) => (
             <Part key={idx} part={p} />
           ))}

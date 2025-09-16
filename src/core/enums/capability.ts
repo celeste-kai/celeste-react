@@ -19,7 +19,7 @@ export enum Capability {
 const CAPABILITY_MAP = new Map(
   Object.entries(Capability)
     .filter(([_, v]) => typeof v === "number" && v !== 0)
-    .map(([k, v]) => [v as number, k])
+    .map(([k, v]) => [v as number, k]),
 );
 
 export function getCapabilityNames(capabilities: Capability): string[] {
