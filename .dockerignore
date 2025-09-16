@@ -1,0 +1,7 @@
+node_modules
+.pnpm-store
+.pnpm-cache
+npm-cache
+bower_components
+dist
+.git
