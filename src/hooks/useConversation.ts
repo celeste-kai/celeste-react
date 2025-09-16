@@ -26,12 +26,13 @@ export function useConversation() {
   const deleteConversation = useCallback(
     async (id: string) => {
       await repository.deleteConversation(id);
-      if (conversationId === id) {
+      const { conversationId: currentConversationId } = useThreadStore.getState();
+      if (currentConversationId === id) {
         setConversationId("");
       }
       await loadConversations();
     },
-    [conversationId, loadConversations, setConversationId]
+    [loadConversations, setConversationId]
   );
 
   useEffect(() => {
