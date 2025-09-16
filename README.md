@@ -142,6 +142,29 @@ pnpm build
 
 Builds the app to the `dist` folder, optimized for production.
 
+### Docker
+
+Build and run the production image locally:
+
+```bash
+# Build image
+docker build -t celeste-react .
+
+# Run container
+docker run -p 8080:80 celeste-react
+```
+
+> [!TIP]
+> Provide build-time configuration by passing `--build-arg` values, for example:
+>
+> ```bash
+> docker build \
+>   --build-arg VITE_API_BASE_URL=https://api.example.com \
+>   --build-arg VITE_SUPABASE_URL=https://your-project.supabase.co \
+>   --build-arg VITE_SUPABASE_ANON_KEY=super-secret \
+>   -t celeste-react .
+> ```
+
 ### Run Tests
 
 ```bash
