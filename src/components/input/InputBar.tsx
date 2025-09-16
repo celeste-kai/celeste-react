@@ -46,7 +46,8 @@ export default function InputBar() {
     onDragOver,
     onDragLeave,
   } = useImageUpload(
-    capability === Capability.IMAGE_GENERATION || capability === Capability.VIDEO_GENERATION
+    capability === Capability.IMAGE_GENERATION ||
+      capability === Capability.VIDEO_GENERATION,
   );
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -62,7 +63,7 @@ export default function InputBar() {
         clearImage();
       }
     },
-    [inputValue, uploadedImage, sendMessage, clearImage]
+    [inputValue, uploadedImage, sendMessage, clearImage],
   );
 
   const handleSend = useCallback(() => {
@@ -144,7 +145,8 @@ export default function InputBar() {
               showVideo={showVideo}
               showAudio={showAudio}
             />
-            {(capability === Capability.IMAGE_GENERATION || capability === Capability.VIDEO_GENERATION) && (
+            {(capability === Capability.IMAGE_GENERATION ||
+              capability === Capability.VIDEO_GENERATION) && (
               <>
                 <input
                   ref={fileInputRef}

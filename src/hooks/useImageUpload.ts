@@ -20,14 +20,14 @@ export function useImageUpload(enableDocumentDrop = false) {
   const selectFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/") || file.size > MAX_FILE_SIZE) return;
     const dataUrl = await fileToDataUrl(file);
-    const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+    const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, "");
     setUploadedImage({
       data: base64Data,
       metadata: {
         fileName: file.name,
         fileType: file.type,
-        fileSize: file.size
-      }
+        fileSize: file.size,
+      },
     });
   }, []);
 
@@ -43,7 +43,7 @@ export function useImageUpload(enableDocumentDrop = false) {
       const file = e.dataTransfer.files?.[0];
       if (file) selectFile(file);
     },
-    [selectFile]
+    [selectFile],
   );
 
   const onDragOver = useCallback((e: DragEvent) => {

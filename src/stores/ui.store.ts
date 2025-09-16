@@ -17,5 +17,5 @@ export const useUIStore = create<UIState>((set) => ({
 
   setOpenMenu: (menu) => set({ openMenu: menu }),
   setImageMode: (mode) => set({ imageMode: mode }),
-  setLoading: (loading) => set({ isLoading: loading })
+  setLoading: (loading) => set({ isLoading: loading }),
 }));

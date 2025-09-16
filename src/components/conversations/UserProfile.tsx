@@ -20,7 +20,7 @@ export function UserProfile({ isExpanded }: { isExpanded: boolean }) {
   };
 
   return (
-    <div className={`${styles.container} ${!isExpanded ? styles.collapsed : ''}`}>
+    <div className={`${styles.container} ${!isExpanded ? styles.collapsed : ""}`}>
       <div className={styles.userInfo}>
         <div className={styles.avatar}>{getInitials(user.email)}</div>
         <div className={styles.userDetails}>

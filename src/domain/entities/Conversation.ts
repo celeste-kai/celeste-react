@@ -6,17 +6,12 @@ export class Conversation {
     private title: string,
     readonly createdAt: Date,
     private updatedAt: Date,
-    private metadata: Record<string, unknown> = {}
+    private metadata: Record<string, unknown> = {},
   ) {}
 
   static create(title: string): Conversation {
     const now = new Date();
-    return new Conversation(
-      Id.generate("conversation"),
-      title,
-      now,
-      now
-    );
+    return new Conversation(Id.generate("conversation"), title, now, now);
   }
 
   static fromData(data: {
@@ -31,7 +26,7 @@ export class Conversation {
       data.title,
       data.createdAt,
       data.updatedAt,
-      data.metadata || {}
+      data.metadata || {},
     );
   }
 
@@ -67,15 +62,5 @@ export class Conversation {
 
   touch(): void {
     this.updatedAt = new Date();
-  }
-
-  toJSON() {
-    return {
-      id: this.getId(),
-      title: this.title,
-      createdAt: this.createdAt.toISOString(),
-      updatedAt: this.updatedAt.toISOString(),
-      metadata: this.metadata
-    };
   }
 }

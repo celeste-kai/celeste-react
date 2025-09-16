@@ -11,7 +11,7 @@ interface ThreadState {
 
 // Load persisted conversationId on initialization
 const getPersistedConversationId = (): string | null => {
-  const stored = localStorage.getItem('conversation-storage');
+  const stored = localStorage.getItem("conversation-storage");
   if (stored) {
     const parsed = JSON.parse(stored);
     return parsed.conversationId || null;
@@ -28,15 +28,18 @@ export const useThreadStore = create<ThreadState>((set) => ({
   setConversationId: (id) => {
     // Save to localStorage when conversationId changes
     if (id) {
-      localStorage.setItem('conversation-storage', JSON.stringify({ conversationId: id }));
+      localStorage.setItem(
+        "conversation-storage",
+        JSON.stringify({ conversationId: id }),
+      );
     } else {
-      localStorage.removeItem('conversation-storage');
+      localStorage.removeItem("conversation-storage");
     }
     set({ conversationId: id });
   },
 
   clear: () => {
-    localStorage.removeItem('conversation-storage');
+    localStorage.removeItem("conversation-storage");
     set({ thread: null, conversationId: null });
-  }
+  },
 }));

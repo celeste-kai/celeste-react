@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Provider} from "../core/enums";
+import type { Provider } from "../core/enums";
 import { Capability } from "../core/enums";
 
 interface SelectionState {
@@ -26,8 +26,9 @@ export const useSelectionStore = create<SelectionState>((set) => ({
   setModel: (model) => set({ model }),
   setProviderFilter: (providerFilter) => set({ providerFilter }),
 
-  selectModel: (model) => set({
-    model: model.id,
-    provider: model.provider
-  })
+  selectModel: (model) =>
+    set({
+      model: model.id,
+      provider: model.provider,
+    }),
 }));

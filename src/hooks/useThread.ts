@@ -53,9 +53,7 @@ export function useThread() {
 
     let activeConversationId = conversationId;
     if (!activeConversationId) {
-      const conversation = Conversation.create(
-        generateConversationTitle(prompt)
-      );
+      const conversation = Conversation.create(generateConversationTitle(prompt));
       await repository.saveConversation(conversation);
       activeConversationId = conversation.getId();
       setConversationId(activeConversationId);
@@ -63,7 +61,7 @@ export function useThread() {
     }
 
     const userContent: MessageContent = {
-      parts: [{ kind: "text", content: prompt }]
+      parts: [{ kind: "text", content: prompt }],
     };
     if (image) {
       userContent.parts.push({ kind: "image", ...image });
@@ -75,7 +73,7 @@ export function useThread() {
       capability,
       model,
       { parts: [{ kind: "text", content: "" }] },
-      "assistant"
+      "assistant",
     );
 
     setThread(currentThread.clone());
@@ -88,8 +86,9 @@ export function useThread() {
       }
     } else if (capability === Capability.IMAGE_GENERATION) {
       const images = await api.generateImages(provider, model, prompt);
-      currentThread.appendPartsToMessage(assistantMessage.getId(),
-        images.map(img => ({ kind: "image" as const, ...img }))
+      currentThread.appendPartsToMessage(
+        assistantMessage.getId(),
+        images.map((img) => ({ kind: "image" as const, ...img })),
       );
       setThread(currentThread.clone());
     } else if (capability === Capability.IMAGE_EDIT) {
@@ -97,21 +96,22 @@ export function useThread() {
         return;
       }
       const editedImage = await api.editImage(provider, model, prompt, image.data);
-      currentThread.appendPartsToMessage(assistantMessage.getId(),
-        [{ kind: "image" as const, ...editedImage }]
-      );
+      currentThread.appendPartsToMessage(assistantMessage.getId(), [
+        { kind: "image" as const, ...editedImage },
+      ]);
       setThread(currentThread.clone());
     } else if (capability === Capability.VIDEO_GENERATION) {
       const videos = await api.generateVideo(provider, model, prompt, image?.data);
-      currentThread.appendPartsToMessage(assistantMessage.getId(),
-        videos.map(v => ({ kind: "video" as const, ...v }))
+      currentThread.appendPartsToMessage(
+        assistantMessage.getId(),
+        videos.map((v) => ({ kind: "video" as const, ...v })),
       );
       setThread(currentThread.clone());
     } else if (capability === Capability.TEXT_TO_SPEECH) {
       const audio = await api.generateAudio(provider, model, prompt);
-      currentThread.appendPartsToMessage(assistantMessage.getId(),
-        [{ kind: "audio" as const, ...audio }]
-      );
+      currentThread.appendPartsToMessage(assistantMessage.getId(), [
+        { kind: "audio" as const, ...audio },
+      ]);
       setThread(currentThread.clone());
     }
 
@@ -127,6 +127,6 @@ export function useThread() {
     loadThread,
     saveThread,
     sendMessage,
-    initThread
+    initThread,
   };
 }

@@ -9,9 +9,9 @@ export const repository = {
     if (!changes.length) return;
 
     const grouped = {
-      add: changes.filter(c => c.type === "add"),
-      update: changes.filter(c => c.type === "update"),
-      delete: changes.filter(c => c.type === "delete")
+      add: changes.filter((c) => c.type === "add"),
+      update: changes.filter((c) => c.type === "update"),
+      delete: changes.filter((c) => c.type === "delete"),
     };
 
     const user = await supabase.auth.getUser();
@@ -25,31 +25,39 @@ export const repository = {
       content: message.getParts(),
       role: message.role,
       created_at: new Date(message.createdAt).toISOString(),
-      order_index: message.orderIndex
+      order_index: message.orderIndex,
     });
 
-    const results = await Promise.all([
-      grouped.add.length &&
-        supabase.from("conversation_messages")
-          .insert(grouped.add.map(c => ({
-            ...mapMessageToRecord(c.entity),
-            conversation_id: conversationId,
-            user_id: userId
-          }))),
+    const results = await Promise.all(
+      [
+        grouped.add.length &&
+          supabase.from("conversation_messages").insert(
+            grouped.add.map((c) => ({
+              ...mapMessageToRecord(c.entity),
+              conversation_id: conversationId,
+              user_id: userId,
+            })),
+          ),
 
-      grouped.update.length &&
-        supabase.from("conversation_messages")
-          .upsert(grouped.update.map(c => ({
-            ...mapMessageToRecord(c.entity),
-            conversation_id: conversationId,
-            user_id: userId
-          }))),
+        grouped.update.length &&
+          supabase.from("conversation_messages").upsert(
+            grouped.update.map((c) => ({
+              ...mapMessageToRecord(c.entity),
+              conversation_id: conversationId,
+              user_id: userId,
+            })),
+          ),
 
-      grouped.delete.length &&
-        supabase.from("conversation_messages")
-          .delete()
-          .in("id", grouped.delete.map(c => c.id))
-    ].filter(Boolean));
+        grouped.delete.length &&
+          supabase
+            .from("conversation_messages")
+            .delete()
+            .in(
+              "id",
+              grouped.delete.map((c) => c.id),
+            ),
+      ].filter(Boolean),
+    );
 
     results.forEach((result: any) => {
       if (result?.error) {
@@ -65,22 +73,24 @@ export const repository = {
       .from("conversation_messages")
       .select("*")
       .eq("conversation_id", conversationId)
-      .order("order_index");
+      .order("order_index", { ascending: true });
 
     const thread = Thread.create();
 
     if (data) {
       data.forEach((row: any) => {
-        thread.addExistingMessage(Message.fromData({
-          id: row.id,
-          provider: row.provider,
-          capability: row.capability,
-          model: row.model,
-          content: { parts: row.content },
-          role: row.role,
-          createdAt: new Date(row.created_at).getTime(),
-          orderIndex: row.order_index
-        }));
+        thread.addExistingMessage(
+          Message.fromData({
+            id: row.id,
+            provider: row.provider,
+            capability: row.capability,
+            model: row.model,
+            content: { parts: row.content },
+            role: row.role,
+            createdAt: new Date(row.created_at).getTime(),
+            orderIndex: row.order_index,
+          }),
+        );
       });
     }
 
@@ -91,15 +101,14 @@ export const repository = {
     const user = await supabase.auth.getUser();
     const userId = user.data.user?.id || "";
 
-    const { error } = await supabase.from("conversations")
-      .upsert({
-        id: conversation.getId(),
-        title: conversation.getTitle(),
-        created_at: conversation.getCreatedAt().toISOString(),
-        updated_at: conversation.getUpdatedAt().toISOString(),
-        metadata: conversation.getMetadata(),
-        user_id: userId
-      });
+    const { error } = await supabase.from("conversations").upsert({
+      id: conversation.getId(),
+      title: conversation.getTitle(),
+      created_at: conversation.getCreatedAt().toISOString(),
+      updated_at: conversation.getUpdatedAt().toISOString(),
+      metadata: conversation.getMetadata(),
+      user_id: userId,
+    });
 
     if (error) {
       // Error saving conversation - could add proper error handling here
@@ -119,12 +128,12 @@ export const repository = {
         title: row.title,
         createdAt: new Date(row.created_at),
         updatedAt: new Date(row.updated_at),
-        metadata: row.metadata
-      })
+        metadata: row.metadata,
+      }),
     );
   },
 
   async deleteConversation(id: string): Promise<void> {
     await supabase.from("conversations").delete().eq("id", id);
-  }
+  },
 };

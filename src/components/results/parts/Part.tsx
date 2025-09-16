@@ -13,7 +13,9 @@ export default function Part({ part }: PartProps) {
     return <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>;
   }
 
-  const src = part.path ?? (part.data ? `data:${getMimeTypeForKind(part.kind)};base64,${part.data}` : null);
+  const src =
+    part.path ??
+    (part.data ? `data:${getMimeTypeForKind(part.kind)};base64,${part.data}` : null);
 
   if (!src) return null;
 
