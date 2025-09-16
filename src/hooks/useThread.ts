@@ -6,6 +6,7 @@ import * as api from "../infrastructure/api";
 import { Capability } from "../core/enums";
 import type { MessageContent } from "../domain/types";
 import type { ImageArtifact } from "../core/types";
+import { Conversation } from "../domain/entities/Conversation";
 
 export function useThread() {
   const { thread, conversationId, setThread, setConversationId } = useThreadStore();
@@ -28,6 +29,17 @@ export function useThread() {
     await repository.saveThread(thread, conversationId);
   };
 
+  const generateConversationTitle = (prompt: string): string => {
+    const trimmed = prompt.trim();
+    if (!trimmed) return "New Conversation";
+
+    const normalized = trimmed.replace(/\s+/g, " ");
+    const maxLength = 60;
+    return normalized.length > maxLength
+      ? `${normalized.slice(0, maxLength).trimEnd()}…`
+      : normalized;
+  };
+
   const sendMessage = async (prompt: string, image?: ImageArtifact | null) => {
     if (!thread) {
       const newThread = Thread.create();
@@ -37,6 +49,16 @@ export function useThread() {
     const currentThread = thread || Thread.create();
 
     if (!provider || !model) return;
+
+    let activeConversationId = conversationId;
+    if (!activeConversationId) {
+      const conversation = Conversation.create(
+        generateConversationTitle(prompt)
+      );
+      await repository.saveConversation(conversation);
+      activeConversationId = conversation.getId();
+      setConversationId(activeConversationId);
+    }
 
     const userContent: MessageContent = {
       parts: [{ kind: "text", content: prompt }]
@@ -91,8 +113,8 @@ export function useThread() {
       setThread(currentThread.clone());
     }
 
-    if (conversationId) {
-      await repository.saveThread(currentThread, conversationId);
+    if (activeConversationId) {
+      await repository.saveThread(currentThread, activeConversationId);
     }
   };
 
