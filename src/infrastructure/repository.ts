@@ -69,13 +69,16 @@ export const repository = {
   },
 
   async saveConversation(conversation: Conversation): Promise<void> {
-    const data = conversation.toJSON();
     const user = await supabase.auth.getUser();
     const userId = user.data.user?.id || "";
 
     await supabase.from("conversations")
       .upsert({
-        ...data,
+        id: conversation.getId(),
+        title: conversation.getTitle(),
+        created_at: conversation.getCreatedAt().toISOString(),
+        updated_at: conversation.getUpdatedAt().toISOString(),
+        metadata: conversation.getMetadata(),
         user_id: userId
       });
   },
