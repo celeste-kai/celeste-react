@@ -1,36 +1,25 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { repository } from "../infrastructure/repository";
 import { Conversation } from "../domain/entities/Conversation";
 import { useThreadStore } from "../stores/thread.store";
-
-type LoadConversationsHandler = () => Promise<void>;
-
-let loadConversationsHandler: LoadConversationsHandler | null = null;
-
-export const loadConversations = async () => {
-  if (loadConversationsHandler) {
-    await loadConversationsHandler();
-  }
-};
+import { useConversationStore } from "../stores/conversation.store";
 
 export function useConversation() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const conversations = useConversationStore((state) => state.conversations);
+  const refreshConversations = useConversationStore((state) => state.refresh);
   const { conversationId, setConversationId } = useThreadStore();
 
-  const loadConversationsCallback = useCallback(async () => {
-    const loaded = await repository.loadConversations();
-    setConversations(loaded);
-  }, []);
+  const loadConversations = useCallback(() => refreshConversations(), [refreshConversations]);
 
   const createConversation = useCallback(
     async (title: string) => {
       const conversation = Conversation.create(title);
       await repository.saveConversation(conversation);
       setConversationId(conversation.getId());
-      await loadConversationsCallback();
+      await refreshConversations();
       return conversation;
     },
-    [loadConversationsCallback, setConversationId]
+    [refreshConversations, setConversationId]
   );
 
   const deleteConversation = useCallback(
@@ -40,27 +29,20 @@ export function useConversation() {
       if (currentConversationId === id) {
         setConversationId(null);
       }
-      await loadConversationsCallback();
+      await refreshConversations();
     },
-    [loadConversationsCallback, setConversationId]
+    [refreshConversations, setConversationId]
   );
 
   useEffect(() => {
-    loadConversationsHandler = loadConversationsCallback;
-    loadConversationsCallback();
-
-    return () => {
-      if (loadConversationsHandler === loadConversationsCallback) {
-        loadConversationsHandler = null;
-      }
-    };
-  }, [loadConversationsCallback]);
+    loadConversations();
+  }, [loadConversations]);
 
   return {
     conversations,
     conversationId,
     createConversation,
     deleteConversation,
-    loadConversations: loadConversationsCallback
+    loadConversations
   };
 }
