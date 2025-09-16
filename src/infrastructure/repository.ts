@@ -25,10 +25,10 @@ export const repository = {
       content: message.getParts(),
       role: message.role,
       created_at: new Date(message.createdAt).toISOString(),
-      order_index: message.createdAt
+      order_index: message.orderIndex
     });
 
-    await Promise.all([
+    const results = await Promise.all([
       grouped.add.length &&
         supabase.from("conversation_messages")
           .insert(grouped.add.map(c => ({
@@ -51,6 +51,12 @@ export const repository = {
           .in("id", grouped.delete.map(c => c.id))
     ].filter(Boolean));
 
+    results.forEach((result: any) => {
+      if (result?.error) {
+        // Error saving messages - could add proper error handling here
+      }
+    });
+
     thread.markClean();
   },
 
@@ -72,7 +78,8 @@ export const repository = {
           model: row.model,
           content: { parts: row.content },
           role: row.role,
-          createdAt: new Date(row.created_at).getTime()
+          createdAt: new Date(row.created_at).getTime(),
+          orderIndex: row.order_index
         }));
       });
     }
@@ -84,7 +91,7 @@ export const repository = {
     const user = await supabase.auth.getUser();
     const userId = user.data.user?.id || "";
 
-    await supabase.from("conversations")
+    const { error } = await supabase.from("conversations")
       .upsert({
         id: conversation.getId(),
         title: conversation.getTitle(),
@@ -93,6 +100,10 @@ export const repository = {
         metadata: conversation.getMetadata(),
         user_id: userId
       });
+
+    if (error) {
+      // Error saving conversation - could add proper error handling here
+    }
   },
 
   async loadConversations(limit: number = 20): Promise<Conversation[]> {

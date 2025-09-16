@@ -10,7 +10,8 @@ export class Message {
     readonly model: string,
     private content: MessageContent,
     readonly role: Role,
-    readonly createdAt: number
+    readonly createdAt: number,
+    readonly orderIndex: number
   ) {}
 
   static create(
@@ -18,7 +19,8 @@ export class Message {
     capability: Capability,
     model: string,
     content: MessageContent,
-    role: Role
+    role: Role,
+    orderIndex: number
   ): Message {
     return new Message(
       Id.generate("message"),
@@ -27,7 +29,8 @@ export class Message {
       model,
       content,
       role,
-      Date.now()
+      Date.now(),
+      orderIndex
     );
   }
 
@@ -39,6 +42,7 @@ export class Message {
     content: MessageContent;
     role: Role;
     createdAt: number;
+    orderIndex: number;
   }): Message {
     return new Message(
       Id.from(data.id, "message"),
@@ -47,7 +51,8 @@ export class Message {
       data.model,
       data.content,
       data.role,
-      data.createdAt
+      data.createdAt,
+      data.orderIndex
     );
   }
 
@@ -81,17 +86,5 @@ export class Message {
 
   updateContent(parts: ContentPart[]): void {
     this.content = { parts };
-  }
-
-  toJSON() {
-    return {
-      id: this.getId(),
-      provider: this.provider,
-      capability: this.capability,
-      model: this.model,
-      content: this.content,
-      role: this.role,
-      createdAt: this.createdAt
-    };
   }
 }
