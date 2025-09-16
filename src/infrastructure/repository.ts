@@ -17,11 +17,22 @@ export const repository = {
     const user = await supabase.auth.getUser();
     const userId = user.data.user?.id || "";
 
+    const mapMessageToRecord = (message: Message) => ({
+      id: message.getId(),
+      provider: message.provider,
+      capability: message.capability,
+      model: message.model,
+      content: message.getParts(),
+      role: message.role,
+      created_at: new Date(message.createdAt).toISOString(),
+      order_index: message.createdAt
+    });
+
     await Promise.all([
       grouped.add.length &&
         supabase.from("conversation_messages")
           .insert(grouped.add.map(c => ({
-            ...c.entity.toJSON(),
+            ...mapMessageToRecord(c.entity),
             conversation_id: conversationId,
             user_id: userId
           }))),
@@ -29,8 +40,9 @@ export const repository = {
       grouped.update.length &&
         supabase.from("conversation_messages")
           .upsert(grouped.update.map(c => ({
-            ...c.entity.toJSON(),
-            conversation_id: conversationId
+            ...mapMessageToRecord(c.entity),
+            conversation_id: conversationId,
+            user_id: userId
           }))),
 
       grouped.delete.length &&
